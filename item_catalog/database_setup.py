@@ -37,7 +37,29 @@ class Artist(Base):
 	genre_id = Column(Integer, ForeignKey('genre.id')
 	genre = relationship(Genre)
 	
+	@property
+    def serialize(self):
+        """Return object data in easily serializeable format"""
+        return {
+            'name': self.name,
+            'id': self.id,
+        }
+		
+class Genre(Base):
+	__tablename__ = 'genre'
 	
+	id = Column(Integer, primary_key=True)
+	name = Column(String(250), nullable=False)
+	description = Column(Text, nullable=True)
+	
+	@property
+    def serialize(self):
+        """Return object data in easily serializeable format"""
+        return {
+            'id': self.id,
+			'title': self.title,
+			'description' : self.description
+        }
 	
 	
 
