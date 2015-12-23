@@ -11,5 +11,33 @@ class Record(Base):
 	__tablename__ = 'record'
 	
 	id = Column(Integer, primary_key=True)
-	title = Column(
+	title = Column(String(250), nullable=False)
+	artist_id = Column(Integer, ForeignKey('artist.id')
+	artist = relationship(Artist)
+	genre_id = Column(Integer, ForeignKey('genre.id')
+	genre = relationship(Genre)
+	year = Column(Text, nullable=False) #Not sure about this datatype
+	description = Column(Text, nullable=True)
+	
+	@property
+    def serialize(self):
+        """Return object data in easily serializeable format"""
+        return {
+            'id': self.id,
+			'title': self.title,
+			'year' : self.year,
+			'description' : self.description
+        }
+	
+class Artist(Base):
+	__tablename__ = 'artist'
+	
+	id = Column(Integer, primary_key=True)
+	name = Column(String(250), nullable=False)
+	genre_id = Column(Integer, ForeignKey('genre.id')
+	genre = relationship(Genre)
+	
+	
+	
+	
 
