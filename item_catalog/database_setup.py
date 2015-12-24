@@ -12,9 +12,9 @@ class Record(Base):
 	
 	id = Column(Integer, primary_key=True)
 	title = Column(String(250), nullable=False)
-	artist_id = Column(Integer, ForeignKey('artist.id')
+	artist_id = Column(Integer, ForeignKey('artist.id'))
 	artist = relationship(Artist)
-	genre_id = Column(Integer, ForeignKey('genre.id')
+	genre_id = Column(Integer, ForeignKey('genre.id'))
 	genre = relationship(Genre)
 	year = Column(Text, nullable=False) #Not sure about this datatype
 	description = Column(Text, nullable=True)
@@ -61,5 +61,7 @@ class Genre(Base):
 			'description' : self.description
         }
 	
-	
+engine = create_engine('sqlite:///recordcatalog.db')
 
+
+Base.metadata.create_all(engine)
