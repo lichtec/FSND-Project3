@@ -7,6 +7,38 @@ from sqlalchemy import create_engine
 
 Base = declarative_base()
 
+class Genre(Base):
+	__tablename__ = 'genre'
+	
+	id = Column(Integer, primary_key=True)
+	name = Column(String(250), nullable=False)
+	description = Column(String, nullable=True)
+
+	@property
+	def serialize(self):
+		"""Return object data in easily serializeable format"""
+		return {
+					'id': self.id,
+					'title': self.title,
+					'description' : self.description
+        }
+
+class Artist(Base):
+	__tablename__ = 'artist'
+	
+	id = Column(Integer, primary_key=True)
+	name = Column(String(250), nullable=False)
+	genre_id = Column(Integer, ForeignKey('genre.id'))
+	genre = relationship(Genre)
+
+	@property
+	def serialize(self):
+		"""Return object data in easily serializeable format"""
+		return {
+					'name': self.name,
+					'id': self.id,
+        }        
+
 class Record(Base):
 	__tablename__ = 'record'
 	
@@ -16,51 +48,19 @@ class Record(Base):
 	artist = relationship(Artist)
 	genre_id = Column(Integer, ForeignKey('genre.id'))
 	genre = relationship(Genre)
-	year = Column(Text, nullable=False) #Not sure about this datatype
-	description = Column(Text, nullable=True)
-	
+	year = Column(String, nullable=False) #Not sure about this datatype
+	description = Column(String, nullable=True)
+
 	@property
-    def serialize(self):
-        """Return object data in easily serializeable format"""
-        return {
-            'id': self.id,
-			'title': self.title,
-			'year' : self.year,
-			'description' : self.description
-        }
+	def serialize(self):
+		"""Return object data in easily serializeable format"""
+		return {
+    				'id': self.id,
+    				'title': self.title,
+    				'year' : self.year,
+    				'description' : self.description }
 	
-class Artist(Base):
-	__tablename__ = 'artist'
-	
-	id = Column(Integer, primary_key=True)
-	name = Column(String(250), nullable=False)
-	genre_id = Column(Integer, ForeignKey('genre.id')
-	genre = relationship(Genre)
-	
-	@property
-    def serialize(self):
-        """Return object data in easily serializeable format"""
-        return {
-            'name': self.name,
-            'id': self.id,
-        }
-		
-class Genre(Base):
-	__tablename__ = 'genre'
-	
-	id = Column(Integer, primary_key=True)
-	name = Column(String(250), nullable=False)
-	description = Column(Text, nullable=True)
-	
-	@property
-    def serialize(self):
-        """Return object data in easily serializeable format"""
-        return {
-            'id': self.id,
-			'title': self.title,
-			'description' : self.description
-        }
-	
+
 engine = create_engine('sqlite:///recordcatalog.db')
 
 
