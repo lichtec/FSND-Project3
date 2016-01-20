@@ -15,20 +15,21 @@ from app import db
 from app.records.record_forms import LoginForm
 
 # Import module models (i.e. User)
-from app.records.record_model import Base, Genre, Artist, Record
+from app.records.record_model import Genre, Artist, Record
 
-engine = create_engine('sqlite:///app.db')
-Base.metadata.bind = engine
 
-DBSession = sessionmaker(bind=engine)
-session = DBSession()
 
 # Define the blueprint: 'auth', set its url prefix: app.url/auth
-recordBase = Blueprint('auth', __name__)
+recordBase = Blueprint('auth', __name__, url_prefix='')
 
 # Set the route and accepted methods
 @recordBase.route('/', methods=['GET', 'POST'])
 def showRecords():
+    engine = create_engine('sqlite:///app.db')
+    Base.metadata.bind = engine
+
+    DBSession = sessionmaker(bind=engine)
+    session = DBSession()
     records = session.query(Record).order_by(asc(Record.title))
     print records
 
