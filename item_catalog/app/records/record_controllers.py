@@ -25,12 +25,7 @@ recordBase = Blueprint('auth', __name__, url_prefix='')
 # Set the route and accepted methods
 @recordBase.route('/', methods=['GET', 'POST'])
 def showRecords():
-    engine = create_engine('sqlite:///app.db')
-    Base.metadata.bind = engine
-
-    DBSession = sessionmaker(bind=engine)
-    session = DBSession()
-    records = session.query(Record).order_by(asc(Record.title))
+    records = Record.query.all()
     print records
 
     return render_template("records/welcome.html", records = records)
