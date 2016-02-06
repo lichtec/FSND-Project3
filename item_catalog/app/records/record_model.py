@@ -21,7 +21,7 @@ class Genre(Base):
 	__tablename__ = 'genre'
 	
 	id = db.Column(db.Integer, primary_key=True)
-	name = db.Column(db.String(250), nullable=False)
+	genre_name = db.Column(db.String(250), nullable=False)
 	description = db.Column(db.String, nullable=True)
 
 	@property
@@ -44,7 +44,7 @@ class Artist(Base):
 	__tablename__ = 'artist'
 	
 	id = db.Column(db.Integer, primary_key=True)
-	name = db.Column(db.String(250), nullable=False)
+	artist_name = db.Column(db.String(250), nullable=False)
 	genre_id = db.Column(db.Integer, ForeignKey('genre.id'))
 	genre = db.relationship(Genre)
 

@@ -4,6 +4,7 @@ from sqlalchemy import create_engine, text
 
 # Import SQLAlchemy
 from flask.ext.sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import sessionmaker
 
 # Define the WSGI application object
 app = Flask(__name__)
@@ -16,6 +17,11 @@ app.config.from_object('config')
 # Define the database object which is imported
 # by modules and controllers
 db = SQLAlchemy(app)
+engine = db.create_engine('sqlite:///app.db')
+db.metadata.bind = engine
+DBSession = sessionmaker(bind=engine)
+session = DBSession()
+app.db = session
 
 # Sample HTTP error handling
 @app.errorhandler(404)
