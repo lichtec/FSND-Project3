@@ -3,24 +3,48 @@
 
 <head>
     <title>Welcome</title>
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='records.css') }}">
     <link href='http://fonts.googleapis.com/css?family=Roboto:400,300,700' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+
 </head>
 
 <body>
+<<<<<<< HEAD
     <div class="container">
         <h1>Welcome!</h1>
 		<div class="span4"><h4>Test1</h4></div>
 		<div class="span4"><h4>TEST2</h4></div>
 		<div class="span4"><h4>TEST3</h4></div>
-    </div>
-    {% for record in records %}
-    <div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-10 restaurant-list">
-            <h3>{{record.title}}</h3>
+=======
+    <div class="jumbotron">
+        <div class="fluid-container">
+            <h1>L-Records</h1>
+            <p>Check out some excellent music.</p>
         </div>
-        <div class="col-md-1"></div>
+>>>>>>> 85119ab850652769756ecfefa10dc74632c5e058
+    </div>
+
+    <div class="fluid-container">
+        <div class="row">
+            {% for record in records %}
+
+            <div class="col-md-6 record" , record>
+                <h3>{{record.title}}</h3>
+                <h4>{{record.artist_name}}</h4>
+                <h4>{{record.id}}</h4>
+                <h6>{{record.year}}</h6>
+                <h6>{{record.genre_name}}</h6>
+            </div>
+        </div>
     </div>
     {% endfor %}
 </body>
