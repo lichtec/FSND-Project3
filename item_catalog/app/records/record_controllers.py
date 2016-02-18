@@ -31,7 +31,16 @@ recordBase = Blueprint('auth', __name__, url_prefix='')
 def showRecords():
     
 
-    records = db.session.query(Record.title, Record.year, Record.description, Artist.artist_name, Genre.genre_name).join(Artist).join(Genre)
-    # print records[0].keys()
+    records = db.session.query(Record.id, Record.title, Record.year, Record.description, Artist.artist_name, 
+        Genre.genre_name).join(Artist).join(Genre)
+    print records
 
     return render_template("records/welcome.html", records = records)
+
+@recordBase.route('/<int:record_id>/', methods=['GET', 'POST'])
+def showRecordInfo(record_id):
+    print record_id
+    record = db.session.query(Record).filter_by(id=record_id).one()
+    print record
+
+    return render_template("records/record_info.html", record = record)
