@@ -39,8 +39,8 @@ def showRecords():
 
 @recordBase.route('/<int:record_id>/', methods=['GET', 'POST'])
 def showRecordInfo(record_id):
-    print record_id
-    record = db.session.query(Record).filter_by(id=record_id).one()
+    record = db.session.query(Record.id, Record.title, Record.year, Record.description, Artist.artist_name, 
+        Genre.genre_name).filter_by(id=record_id).join(Artist).join(Genre).one()
     print record
 
     return render_template("records/record_info.html", record = record)
