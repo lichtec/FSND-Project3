@@ -1,5 +1,6 @@
 # Statement for enabling the development environment
 DEBUG = True
+SQLALCHEMY_TRACK_MODIFICATIONS=True
 
 # Define the application directory
 import os
