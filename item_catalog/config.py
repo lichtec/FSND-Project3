@@ -25,3 +25,7 @@ CSRF_SESSION_KEY = "secret"
 
 # Secret key for signing cookies
 SECRET_KEY = "secret"
+
+#imgur api
+IMGUR_SECRET_KEY = 'e09c306faee4cc6527eb9f03676a4860df612e44'
+IMGUR_CLIENT_ID = '95123b1565c2a83'
