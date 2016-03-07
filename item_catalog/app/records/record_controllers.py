@@ -62,7 +62,6 @@ def showRecordInfo(record_id):
     return render_template("records/record_info.html", record = record)
 
 @recordBase.route('/<int:record_id>/JSON', methods=['GET'])
-def showRecordsInfoJSON():
-    record = db.session.query(Record.id, Record.title, Record.year, Record.description, Artist.artist_name, 
-        Genre.genre_name).filter_by(id=record_id).join(Artist).join(Genre).one()
-    return jsonify(record=[r.serialize for r in record])
+def showRecordsInfoJSON0(record_id):
+    record = db.session.query(Record).filter_by(id=record_id).one()
+    return jsonify(record=[record.serialize])
