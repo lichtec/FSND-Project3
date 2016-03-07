@@ -46,14 +46,12 @@ def showRecords():
 
 @recordBase.route('/JSON', methods=['GET'])
 def showRecordsJSON():
-    records = db.session.query(Record.id, Record.title, Record.year, Record.description, Artist.artist_name, 
-        Genre.genre_name).join(Artist).join(Genre).all()
-    print type(records[0])
-    print serialize(SERIALIZE_RECORD, records)
+    #records = db.session.query(Record.id, Record.title, Record.year, Record.description, Artist.artist_name, 
+       # Genre.genre_name).join(Artist).join(Genre).all()
+    records = db.session.query(Record).all()
+    print records
     
-    print serialize(SERIALIZE_RECORD, (x for x in records))
-    
-    return jsonify([serialize(SERIALIZE_RECORD, records)])
+    return jsonify(records=[r.serialize for r in records])
 
 @recordBase.route('/<int:record_id>/', methods=['GET', 'POST'])
 def showRecordInfo(record_id):
