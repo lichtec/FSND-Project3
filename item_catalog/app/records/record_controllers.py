@@ -20,22 +20,14 @@ from app.records.record_forms import LoginForm
 # Import module models (i.e. User)
 from app.records.record_model import Genre, Artist, Record
 
-from app.serialize import serialize
-
-#standard serial model for the record joins
-SERIALIZE_RECORD = ['RecordID', 'RecordTitle', 'RecordYear', 'RecordDescription', 'ArtistName', 'GenreName']
-
-# engine = db.create_engine('sqlite:///app.db')
-# db.metadata.bind = engine
-
-# DBSession = sessionmaker(bind=engine)
-# session = DBSession()
-
-# Define the blueprint: 'auth', set its url prefix: app.url/auth
+# Define the blueprint: 'record', set its url prefix: app.url/
 recordBase = Blueprint('record', __name__, url_prefix='')
 
-# Set the route and accepted methods
+'''
+    Set the route and accepted methods Records
+''' 
 @recordBase.route('/', methods=['GET', 'POST'])
+@recordBase.route('/records', methods=['GET', 'POST'])
 def showRecords():
     
     records = db.session.query(Record.id, Record.title, Record.year, Record.description, Artist.artist_name, 
@@ -44,7 +36,8 @@ def showRecords():
 
     return render_template("records/welcome.html", records = records)
 
-@recordBase.route('/JSON', methods=['GET'])
+@recordBase.route('/json', methods=['GET'])
+@recordBase.route('/records/json', methods=['GET'])
 def showRecordsJSON():
     #records = db.session.query(Record.id, Record.title, Record.year, Record.description, Artist.artist_name, 
        # Genre.genre_name).join(Artist).join(Genre).all()
@@ -53,7 +46,7 @@ def showRecordsJSON():
     
     return jsonify(records=[r.serialize for r in records])
 
-@recordBase.route('/<int:record_id>/', methods=['GET', 'POST'])
+@recordBase.route('/records/<int:record_id>/', methods=['GET', 'POST'])
 def showRecordInfo(record_id):
     record = db.session.query(Record.id, Record.title, Record.year, Record.description, Artist.artist_name, 
         Genre.genre_name).filter_by(id=record_id).join(Artist).join(Genre).one()
@@ -61,7 +54,35 @@ def showRecordInfo(record_id):
 
     return render_template("records/record_info.html", record = record)
 
-@recordBase.route('/<int:record_id>/JSON', methods=['GET'])
+@recordBase.route('/records/<int:record_id>/json', methods=['GET'])
 def showRecordsInfoJSON0(record_id):
     record = db.session.query(Record).filter_by(id=record_id).one()
     return jsonify(record=[record.serialize])
+
+
+'''
+    Set the route and accepted methods ARTIST
+'''
+
+@recordBase.route('/artists', methods=['GET', 'POST'])
+def showArtists():
+    
+    artists = db.session.query(Record).all()
+    return render_template("records/artists.html", records = records)
+
+@recordBase.route('/artists/json', methods=['GET'])
+def showArtistsJSON():
+    artists = db.session.query(Record).all()
+    return jsonify(records=[r.serialize for r in artists])
+
+@recordBase.route('/artists/<int:artist_id>/', methods=['GET', 'POST'])
+def showArtistInfo(artist_id):
+    artist = db.session.query(Artist).filter_by(id=artist_id).one()
+    records = db.session.query(Record).filter_by(artist_id=artist_id).all()
+
+    return render_template("records/artist_info.html", artist = artist, records = records)
+
+@recordBase.route('/artists/<int:artist_id>/json', methods=['GET'])
+def showArtistInfoJSON(record_id):
+    artist = db.session.query(Artist).filter_by(id=artist_id).one()
+    return jsonify(artist=[artist.serialize])

@@ -28,7 +28,8 @@ class Genre(Base):
 		return {
 					'id': self.id,
 					'title': self.title,
-					'description' : self.description
+					'description' : self.description,
+                    'artist_id' :   self.artist_id
         }
 
     # New instance instantiation procedure
@@ -52,6 +53,7 @@ class Artist(Base):
 		return {
 					'name': self.name,
 					'id': self.id,
+                    'genre_id'  : self.genre_id
         }     
 
     # New instance instantiation procedure
@@ -81,7 +83,10 @@ class Record(Base):
     				'id': self.id,
     				'title': self.title,
     				'year' : self.year,
-    				'description' : self.description }
+    				'description' : self.description,
+                    'artist_id' :   self.artist_id,
+                    'genre_id'  : self.genre_id
+                }
     # New instance instantiation procedure
 	def __init__(self, title, artist_id, genre_id, year, description):
 		self.title     = title
