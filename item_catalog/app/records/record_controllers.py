@@ -34,7 +34,7 @@ def showRecords():
         Genre.genre_name).join(Artist).join(Genre).all()
     print type(records)
 
-    return render_template("records/welcome.html", records = records)
+    return render_template("records/records.html", records = records)
 
 @recordBase.route('/json', methods=['GET'])
 @recordBase.route('/records/json', methods=['GET'])
