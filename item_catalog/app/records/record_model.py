@@ -51,7 +51,7 @@ class Artist(Base):
 	def serialize(self):
 		"""Return object data in easily serializeable format"""
 		return {
-					'name': self.name,
+					'name': self.artist_name,
 					'id': self.id,
                     'genre_id'  : self.genre_id
         }     
@@ -62,7 +62,7 @@ class Artist(Base):
 		self.genre_id = genre_id
 
 	def __repr__(self):
-		return '<Artist %r>' % (self.name)   
+		return '<Artist %r>' % (self.artist_name)   
 
 class Record(Base):
 	__tablename__ = 'record'

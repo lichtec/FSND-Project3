@@ -67,8 +67,8 @@ def showRecordsInfoJSON0(record_id):
 @recordBase.route('/artists', methods=['GET', 'POST'])
 def showArtists():
     
-    artists = db.session.query(Record).all()
-    return render_template("records/artists.html", records = records)
+    artists = db.session.query(Artist).all()
+    return render_template("artists/artists.html", artists = artists)
 
 @recordBase.route('/artists/json', methods=['GET'])
 def showArtistsJSON():
@@ -80,7 +80,7 @@ def showArtistInfo(artist_id):
     artist = db.session.query(Artist).filter_by(id=artist_id).one()
     records = db.session.query(Record).filter_by(artist_id=artist_id).all()
 
-    return render_template("records/artist_info.html", artist = artist, records = records)
+    return render_template("artists/artist_info.html", artist = artist, records = records)
 
 @recordBase.route('/artists/<int:artist_id>/json', methods=['GET'])
 def showArtistInfoJSON(record_id):
