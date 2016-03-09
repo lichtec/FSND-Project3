@@ -1,0 +1,20 @@
+{% extends "main.html" %} {% block content %} {% include "header.html" %}
+<div class="row text-center">
+    {% for record in records %}
+    <div class="col-md-3 col-sm-6 hero-feature">
+        <div class="thumbnail">
+            <img src="http://placehold.it/800x500" alt="">
+            <div class="caption">
+                <h1>{{record.title}}</h1>
+                <h4>{{record.artist_name}}</h4>
+                <h6>{{record.year}}</h6>
+                <p>
+                    <a href="{{ record.id }}" class="btn btn-default">More Info</a>
+                </p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+</div>
+{% endblock %}
