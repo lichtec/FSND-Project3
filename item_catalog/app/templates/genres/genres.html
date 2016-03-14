@@ -1,12 +1,12 @@
 {% extends "main.html" %} {% block content %} {% include "header.html" %}
 <div class="row text-center">
-    {% for record in records %}
+    {% for genre in genres %}
     <div class="col-md-3 col-sm-6 hero-feature">
         <div class="thumbnail">
             <img src="http://placehold.it/800x500" alt="">
             <div class="caption">
-                <h1>{{genre.name}}</h1>
-                <h4>{{genre.description}}</h4>
+                <h1>{{ genre.genre_name }}</h1>
+                <h4>{{ genre.description }}</h4>
                 <p>
                     <a href="/genres/{{ genre.id }}" class="btn btn-default">More Info</a>
                 </p>
@@ -16,3 +16,4 @@
     {% endfor %}
 
 </div>
+{% endblock %}

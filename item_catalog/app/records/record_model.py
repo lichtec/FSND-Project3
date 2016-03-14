@@ -27,17 +27,16 @@ class Genre(Base):
 		"""Return object data in easily serializeable format"""
 		return {
 					'id': self.id,
-					'title': self.title,
-					'description' : self.description,
-                    'artist_id' :   self.artist_id
-        }
+					'name': self.genre_name,
+					'description' : self.description
+                }
 
     # New instance instantiation procedure
 	def __init__(self, name, description):
 		self.name = name
 		self.description = description
 	def __repr__(self):
-		return '<Genre %r>' % (self.name)
+		return '<Genre %r>' % (self.genre_name)
 
 class Artist(Base):
 	__tablename__ = 'artist'
