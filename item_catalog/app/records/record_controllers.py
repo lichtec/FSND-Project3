@@ -30,10 +30,8 @@ recordBase = Blueprint('record', __name__, url_prefix='')
 @recordBase.route('/records', methods=['GET', 'POST'])
 def showRecords():
     
-    records = db.session.query(Record.id, Record.title, Record.year, Record.description, Artist.artist_name, 
+    records = db.session.query(Record.id, Record.title, Record.year, Record.description, Record.artist_id, Artist.artist_name, 
         Genre.genre_name).join(Artist).join(Genre).all()
-    print records
-
     return render_template("records/records.html", records = records)
 
 @recordBase.route('/json', methods=['GET'])
@@ -46,8 +44,8 @@ def showRecordsJSON():
 
 @recordBase.route('/records/<int:record_id>/', methods=['GET', 'POST'])
 def showRecordInfo(record_id):
-    record = db.session.query(Record.id, Record.title, Record.year, Record.description, Artist.artist_name, 
-        Genre.genre_name, Record.artist_id).filter_by(id=record_id).join(Artist).join(Genre).one()
+    record = db.session.query(Record.id, Record.title, Record.year, Record.description, Record.artist_id, Artist.artist_name, 
+        Genre.genre_name).filter_by(id=record_id).join(Artist).join(Genre).one()
     return render_template("records/record_info.html", record = record)
 
 @recordBase.route('/records/<int:record_id>/json', methods=['GET'])

@@ -1,5 +1,6 @@
 {% extends "main.html" %} {% block content %} {% include "header.html" %}
 <div class="row text-center">
+<<<<<<< HEAD
             <div class="col-md-1 col-sm-1 hero-feature"></div>
             <div class="col-md-10 col-sm-10 hero-feature">
                 <div class="thumbnail">
@@ -12,7 +13,20 @@
                         {% endfor %}
                     </div>
                 </div>
+=======
+    <div class="col-md-1 col-sm-1 hero-feature"></div>
+    <div class="col-md-10 col-sm-10 hero-feature">
+        <div class="thumbnail">
+            <img src="http://placehold.it/800x500" alt="">
+            <div class="caption">
+                <h1>{{ artist.artist_name }}</h1>
+                <h2>Records:</h2>{% for record in records %}
+                <h3><a href="/records/{{ record.id }}">{{ record.title }}</a></h3> {% endfor %}
+
+>>>>>>> bacd1e0ecec544302dc6b8c70ad7939555d87a8b
             </div>
-            <div class="col-md-1 col-sm-1 hero-feature"></div>
         </div>
+    </div>
+    <div class="col-md-1 col-sm-1 hero-feature"></div>
+</div>
 {% endblock %}
