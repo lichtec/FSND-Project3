@@ -32,7 +32,7 @@ def showRecords():
     
     records = db.session.query(Record.id, Record.title, Record.year, Record.description, Artist.artist_name, 
         Genre.genre_name).join(Artist).join(Genre).all()
-    print type(records)
+    print records
 
     return render_template("records/records.html", records = records)
 
@@ -41,17 +41,13 @@ def showRecords():
 def showRecordsJSON():
     #records = db.session.query(Record.id, Record.title, Record.year, Record.description, Artist.artist_name, 
        # Genre.genre_name).join(Artist).join(Genre).all()
-    records = db.session.query(Record).all()
-    print records
-    
+    records = db.session.query(Record).all()    
     return jsonify(records=[r.serialize for r in records])
 
 @recordBase.route('/records/<int:record_id>/', methods=['GET', 'POST'])
 def showRecordInfo(record_id):
     record = db.session.query(Record.id, Record.title, Record.year, Record.description, Artist.artist_name, 
-        Genre.genre_name).filter_by(id=record_id).join(Artist).join(Genre).one()
-    print type(record)
-
+        Genre.genre_name, Record.artist_id).filter_by(id=record_id).join(Artist).join(Genre).one()
     return render_template("records/record_info.html", record = record)
 
 @recordBase.route('/records/<int:record_id>/json', methods=['GET'])
@@ -79,7 +75,6 @@ def showArtistsJSON():
 def showArtistInfo(artist_id):
     artist = db.session.query(Artist).filter_by(id=artist_id).one()
     records = db.session.query(Record).filter_by(artist_id=artist_id).all()
-
     return render_template("artists/artist_info.html", artist = artist, records = records)
 
 @recordBase.route('/artists/<int:artist_id>/json', methods=['GET'])

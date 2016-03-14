@@ -5,9 +5,10 @@
                 <div class="thumbnail">
                     <img src="http://placehold.it/800x500" alt="">
                     <div class="caption">
-                        <h1>{{artis.name}}</h1>
+                        <h1>{{artist.name}}</h1>
+                        <h2>Current Recocrds</h2>
                         {% for record in records %}
-                        <h3>record.title</h3>
+                        <h3><a href="/records/{{ record.id }}">{{ record.title }}</a></h3>
                         {% endfor %}
                     </div>
                 </div>
