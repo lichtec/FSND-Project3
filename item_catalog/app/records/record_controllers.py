@@ -24,7 +24,7 @@ from app.records.record_model import Genre, Artist, Record
 recordBase = Blueprint('record', __name__, url_prefix='')
 
 '''
-    Set the route and accepted methods Records
+    Set the route and accepted methods RECORDS
 ''' 
 @recordBase.route('/', methods=['GET', 'POST'])
 @recordBase.route('/records', methods=['GET', 'POST'])
@@ -66,7 +66,7 @@ def showArtists():
 
 @recordBase.route('/artists/json', methods=['GET'])
 def showArtistsJSON():
-    artists = db.session.query(Record).all()
+    artists = db.session.query(Artist).all()
     return jsonify(records=[r.serialize for r in artists])
 
 @recordBase.route('/artists/<int:artist_id>/', methods=['GET', 'POST'])
@@ -79,3 +79,29 @@ def showArtistInfo(artist_id):
 def showArtistInfoJSON(record_id):
     artist = db.session.query(Artist).filter_by(id=artist_id).one()
     return jsonify(artist=[artist.serialize])
+
+'''
+    Set the route and accepted methods GENRE
+'''
+
+@recordBase.route('/genres', methods=['GET', 'POST'])
+def showGenres():
+    
+    genres = db.session.query(Genre).all()
+    return render_template("genres/genres.html", genres = genres)
+
+@recordBase.route('/genres/json', methods=['GET'])
+def showGenresJSON():
+    genres = db.session.query(Genres).all()
+    return jsonify(genres=[r.serialize for r in genres])
+
+@recordBase.route('/genres/<int:genre_id>/', methods=['GET', 'POST'])
+def showGenreInfo(artist_id):
+    genres = db.session.query(genres).filter_by(id=genres_id).one()
+    artist = db.session.query(Artist).filter_by(genre_id=genre_id).all()
+    return render_template("genres/genre_info.html", artist = artist, records = records)
+
+@recordBase.route('/genres/<int:genre_id>/json', methods=['GET'])
+def showGenreInfoJSON(record_id):
+    artist = db.session.query(Genre).filter_by(id=genre_id).one()
+    return jsonify(genre=[genre.serialize])
