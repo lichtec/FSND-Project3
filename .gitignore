@@ -58,3 +58,6 @@ target/
 
 #DB
 .db
+
+#os file system
+.DS_Store
