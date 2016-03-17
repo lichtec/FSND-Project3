@@ -1,6 +1,9 @@
 # Import flask dependencies
 from flask import Blueprint, request, render_template, \
-                  flash, g, session, redirect, url_for
+flash, g, session, redirect, url_for, session as login_session
+
+import random, string
+    
 
 from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
@@ -18,27 +21,19 @@ from app import db
 from app.records.record_forms import LoginForm
 
 # Import module models (i.e. User)
-from app.records.record_model import Genre, Artist, Record
-
-# engine = db.create_engine('sqlite:///app.db')
-# db.metadata.bind = engine
-
-# DBSession = sessionmaker(bind=engine)
-# session = DBSession()
+from app.auth.auth_model import User
 
 # Define the blueprint: 'auth', set its url prefix: app.url/auth
-recordBase = Blueprint('auth', __name__, url_prefix='')
+authBase = Blueprint('auth', __name__, url_prefix='')
 
-# Set the route and accepted methods
-#@recordBase.route('/', methods=['GET', 'POST'])
-#def showRecords():
-#    
-#    records = db.session.query(Record.id, Record.title, Record.year, Record.description, Artist.artist_name, 
-#        Genre.genre_name).join(Artist).join(Genre)
-#    print records
-#
-#    return render_template("records/welcome.html", records = records)
-#
+ #Set the route and accepted methods
+@authBase.route('/login', methods=['GET', 'POST'])
+def showLogin():
+    state = ''.join(random.choice(string.ascii_uppercase + string.digits)for x in xrange(32))
+    login_session['state'] = state
+    # return "The current session state is %s" % login_session['state']
+    return render_template('auth/login.html', STATE=state)
+
 #@recordBase.route('/JSON', methods=['GET'])
 #def showRecordsJSON():
 #    records = db.session.query(Record.id, Record.title, Record.year, Record.description, Artist.artist_name, 

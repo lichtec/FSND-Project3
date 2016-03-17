@@ -8,8 +8,6 @@ from sqlalchemy.orm import sessionmaker
 
 # Define the WSGI application object
 app = Flask(__name__)
-print app
-print __name__
 
 # Configurations
 app.config.from_object('config')
@@ -30,9 +28,12 @@ def not_found(error):
 
 # Import a module / component using its blueprint handler variable (mod_auth)
 from app.records.record_controllers import recordBase as record
+from app.auth.auth_controllers import authBase as auth
 
+print auth
 # Register blueprint(s)
 app.register_blueprint(record)
+app.register_blueprint(auth)
 # app.register_blueprint(xyz_module)
 # ..
 
