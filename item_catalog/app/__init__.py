@@ -30,7 +30,6 @@ def not_found(error):
 from app.records.record_controllers import recordBase as record
 from app.auth.auth_controllers import authBase as auth
 
-print auth
 # Register blueprint(s)
 app.register_blueprint(record)
 app.register_blueprint(auth)

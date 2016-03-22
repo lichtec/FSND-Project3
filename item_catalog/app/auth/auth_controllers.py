@@ -1,10 +1,16 @@
 # Import flask dependencies
 from flask import Blueprint, request, render_template, \
-                  flash, g, session, redirect, url_for
+                  flash, g, session, redirect, url_for, make_response
 import random, string
+
+from oauth2client.client import flow_from_clientsecrets
+from oauth2client.client import FlowExchangError
+import httplib2
+import requests
 
 from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
+
 
 # Import password / encryption helper tools
 from werkzeug import check_password_hash, generate_password_hash
@@ -19,43 +25,14 @@ from app import db
 from app.records.record_forms import LoginForm
 
 # Import module models (i.e. User)
-from app.records.record_model import Genre, Artist, Record
+from app.records.auth_model import User
 
-# engine = db.create_engine('sqlite:///app.db')
-# db.metadata.bind = engine
-
-# DBSession = sessionmaker(bind=engine)
-# session = DBSession()
+CLIENT_ID = json.loads(open('/config/client_secret_821825718249-6am7odj81p1gvdu7q1jfmpsd8v7ugu76.apps.googleusercontent.com.json', 'r').read())['web']['client_id']
 
 # Define the blueprint: 'auth', set its url prefix: app.url/auth
-recordBase = Blueprint('auth', __name__, url_prefix='')
+authBase = Blueprint('auth', __name__, url_prefix='')
 
 # Set the route and accepted methods
-#@recordBase.route('/', methods=['GET', 'POST'])
-#def showRecords():
-#    
-#    records = db.session.query(Record.id, Record.title, Record.year, Record.description, Artist.artist_name, 
-#        Genre.genre_name).join(Artist).join(Genre)
-#    print records
-#
-#    return render_template("records/welcome.html", records = records)
-#
-#@recordBase.route('/JSON', methods=['GET'])
-#def showRecordsJSON():
-#    records = db.session.query(Record.id, Record.title, Record.year, Record.description, Artist.artist_name, 
-#        Genre.genre_name).join(Artist).join(Genre)
-#    return jsonify(records=[r.serialize for r in records])
-#
-#@recordBase.route('/<int:record_id>/', methods=['GET', 'POST'])
-#def showRecordInfo(record_id):
-#    record = db.session.query(Record.id, Record.title, Record.year, Record.description, Artist.artist_name, 
-#        Genre.genre_name).filter_by(id=record_id).join(Artist).join(Genre).one()
-#    print record
-#
-#    return render_template("records/record_info.html", record = record)
-#
-#@recordBase.route('/<int:record_id>/JSON', methods=['GET'])
-#def showRecordsJSON():
-#    record = db.session.query(Record.id, Record.title, Record.year, Record.description, Artist.artist_name, 
-#        Genre.genre_name).filter_by(id=record_id).join(Artist).join(Genre).one()
-#    return jsonify(record=[r.serialize for r in record])
+@authBase.route('/login', methods=['GET', 'POST'])
+def login():
+    return render_template("auth/login.html")
