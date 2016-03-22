@@ -4,7 +4,7 @@ from flask import Blueprint, request, render_template, \
 import random, string
 
 from oauth2client.client import flow_from_clientsecrets
-from oauth2client.client import FlowExchangError
+from oauth2client.client import FlowExchangeError
 import httplib2
 import requests
 
@@ -21,18 +21,111 @@ import json
 # Import the database object from the main app module
 from app import db
 
-# Import module forms
-from app.records.record_forms import LoginForm
-
 # Import module models (i.e. User)
-from app.records.auth_model import User
+from app.auth.auth_model import User
 
-CLIENT_ID = json.loads(open('/config/client_secret_821825718249-6am7odj81p1gvdu7q1jfmpsd8v7ugu76.apps.googleusercontent.com.json', 'r').read())['web']['client_id']
+CLIENT_ID = json.loads(open('config/client_secret_821825718249-6am7odj81p1gvdu7q1jfmpsd8v7ugu76.apps.googleusercontent.com.json', 'r').read())['web']['client_id']
 
 # Define the blueprint: 'auth', set its url prefix: app.url/auth
 authBase = Blueprint('auth', __name__, url_prefix='')
 
 # Set the route and accepted methods
-@authBase.route('/login', methods=['GET', 'POST'])
+@authBase.route('/login', methods=['GET'])
 def login():
     return render_template("auth/login.html")
+
+@authBase.route('/gconnect', methods=['POST'])
+def gconnect():
+    # Validate state token
+    if request.args.get('state') != login_session['state']:
+        response = make_response(json.dumps('Invalid state parameter.'), 401)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    # Obtain authorization code
+    code = request.data
+    
+    try:
+        # Upgrade the authorization code into a credentials object
+        oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
+        oauth_flow.redirect_uri = 'postmessage'
+        credentials = oauth_flow.step2_exchange(code)
+    except FlowExchangeError:
+        response = make_response(
+            json.dumps('Failed to upgrade the authorization code.'), 401)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    
+    # Check that the access token is valid.
+    access_token = credentials.access_token
+    url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s'
+           % access_token)
+    h = httplib2.Http()
+    result = json.loads(h.request(url, 'GET')[1])
+    # If there was an error in the access token info, abort.
+    if result.get('error') is not None:
+        response = make_response(json.dumps(result.get('error')), 500)
+        response.headers['Content-Type'] = 'application/json'
+        
+    # Verify that the access token is used for the intended user.
+    gplus_id = credentials.id_token['sub']
+    if result['user_id'] != gplus_id:
+        response = make_response(
+            json.dumps("Token's user ID doesn't match given user ID."), 401)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    
+    # Verify that the access token is valid for this app.
+    if result['issued_to'] != CLIENT_ID:
+        response = make_response(
+            json.dumps("Token's client ID does not match app's."), 401)
+        print "Token's client ID does not match app's."
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    
+    stored_credentials = login_session.get('credentials')
+    stored_gplus_id = login_session.get('gplus_id')
+    if stored_credentials is not None and gplus_id == stored_gplus_id:
+        response = make_response(json.dumps('Current user is already connected.'),
+                                 200)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    
+     # Store the access token in the session for later use.
+    login_session['credentials'] = credentials
+    login_session['gplus_id'] = gplus_id
+
+    # Get user info
+    userinfo_url = "https://www.googleapis.com/oauth2/v1/userinfo"
+    params = {'access_token': credentials.access_token, 'alt': 'json'}
+    answer = requests.get(userinfo_url, params=params)
+
+    data = answer.json()
+
+    login_session['username'] = data['name']
+    login_session['picture'] = data['picture']
+    login_session['email'] = data['email']
+
+
+    user_id = getUserID(login_session['email'])
+    if not user_id:
+      user_id = createUser(login_session)
+    login_session['user_id'] = user_id
+
+
+    # See if a user exists, if it doesn't make a new one
+
+    output = ''
+    output += '<h1>Welcome, '
+    output += login_session['username']
+    output += '!</h1>'
+    output += '<img src="'
+    output += login_session['picture']
+    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
+    flash("you are now logged in as %s" % login_session['username'])
+    print "done!"
+    return output
+
+    
+
+    
+    #return render_template("auth/login.html")
