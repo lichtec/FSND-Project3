@@ -1,6 +1,6 @@
 # Import flask dependencies
 from flask import Blueprint, request, render_template, \
-                  flash, g, session, redirect, url_for, make_response
+                  flash, g, session as login_session, redirect, url_for, make_response
 import random, string
 
 from oauth2client.client import flow_from_clientsecrets
@@ -32,6 +32,9 @@ authBase = Blueprint('auth', __name__, url_prefix='')
 # Set the route and accepted methods
 @authBase.route('/login', methods=['GET'])
 def login():
+    state = ''.join(random.choice(string.ascii_uppercase + string.digits)
+                    for x in xrange(32))
+    login_session['state'] = state
     return render_template("auth/login.html")
 
 @authBase.route('/gconnect', methods=['POST'])
@@ -43,6 +46,7 @@ def gconnect():
         return response
     # Obtain authorization code
     code = request.data
+    print code
     
     try:
         # Upgrade the authorization code into a credentials object
