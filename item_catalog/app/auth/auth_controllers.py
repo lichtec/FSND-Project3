@@ -24,7 +24,7 @@ from app import db
 # Import module models (i.e. User)
 from app.auth.auth_model import User
 
-CLIENT_ID = json.loads(open('config/client_secret_821825718249-6am7odj81p1gvdu7q1jfmpsd8v7ugu76.apps.googleusercontent.com.json', 'r').read())['web']['client_id']
+CLIENT_ID = json.loads(open('config/client_secrets.json', 'r').read())['web']['client_id']
 
 # Define the blueprint: 'auth', set its url prefix: app.url/auth
 authBase = Blueprint('auth', __name__, url_prefix='')
@@ -35,7 +35,7 @@ def login():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
                     for x in xrange(32))
     login_session['state'] = state
-    return render_template("auth/login.html")
+    return render_template("auth/login.html", STATE = state)
 
 @authBase.route('/gconnect', methods=['POST'])
 def gconnect():
@@ -46,23 +46,26 @@ def gconnect():
         return response
     # Obtain authorization code
     code = request.data
-    print code
+    print 'code: '+ code
     
     try:
         # Upgrade the authorization code into a credentials object
-        oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
+        oauth_flow = flow_from_clientsecrets('config/client_secrets.json', scope='')
         oauth_flow.redirect_uri = 'postmessage'
         credentials = oauth_flow.step2_exchange(code)
+        print credentials
     except FlowExchangeError:
         response = make_response(
             json.dumps('Failed to upgrade the authorization code.'), 401)
         response.headers['Content-Type'] = 'application/json'
+        print response
         return response
     
     # Check that the access token is valid.
     access_token = credentials.access_token
     url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s'
            % access_token)
+    print url
     h = httplib2.Http()
     result = json.loads(h.request(url, 'GET')[1])
     # If there was an error in the access token info, abort.
