@@ -24,7 +24,9 @@
                     <a href="#">Contact</a>
                 </li>
                 <li class='pull-right'>
-                    <a href='/login'>Login</a>
+                    {% if session.logged_in %}
+                    <a href='/login'>Login</a> {% else %}
+                    <a href='/gdisconnect'>Logout</a> {% endif %}
                 </li>
             </ul>
         </div>

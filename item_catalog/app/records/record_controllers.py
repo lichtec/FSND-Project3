@@ -1,6 +1,6 @@
 # Import flask dependencies
 from flask import Blueprint, request, render_template, \
-                  flash, g, session, redirect, url_for, jsonify
+                  flash, g, session as login_session, redirect, url_for, jsonify
 
 from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
@@ -29,10 +29,12 @@ recordBase = Blueprint('record', __name__, url_prefix='')
 @recordBase.route('/', methods=['GET', 'POST'])
 @recordBase.route('/records', methods=['GET', 'POST'])
 def showRecords():
-    
     records = db.session.query(Record.id, Record.title, Record.year, Record.description, Record.artist_id, Artist.artist_name, 
         Genre.genre_name).join(Artist).join(Genre).all()
-    return render_template("records/records.html", records = records)
+    if(login_session['username']):
+        return render_template("records/records.html", records = records, loggedIn = True)
+    else:
+        return render_template("records/records.html", records = records, loggedIn = False)
 
 @recordBase.route('/json', methods=['GET'])
 @recordBase.route('/records/json', methods=['GET'])
