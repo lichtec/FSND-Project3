@@ -31,10 +31,10 @@ recordBase = Blueprint('record', __name__, url_prefix='')
 def showRecords():
     records = db.session.query(Record.id, Record.title, Record.year, Record.description, Record.artist_id, Artist.artist_name, 
         Genre.genre_name).join(Artist).join(Genre).all()
-    if(login_session['username']):
-        return render_template("records/records.html", records = records, loggedIn = True)
-    else:
+    if 'username' not in login_session:
         return render_template("records/records.html", records = records, loggedIn = False)
+    else:
+        return render_template("records/records.html", records = records, loggedIn = True)
 
 @recordBase.route('/json', methods=['GET'])
 @recordBase.route('/records/json', methods=['GET'])
