@@ -15,9 +15,9 @@ import json
 from app import db
 
 # Import module forms
-from app.records.record_forms import LoginForm
+#from app.records.record_forms import LoginForm
 
-# Import module models (i.e. User)
+# Import module models 
 from app.records.record_model import Genre, Artist, Record
 
 # Define the blueprint: 'record', set its url prefix: app.url/
@@ -48,7 +48,10 @@ def showRecordsJSON():
 def showRecordInfo(record_id):
     record = db.session.query(Record.id, Record.title, Record.year, Record.description, Record.artist_id, Artist.artist_name, 
         Genre.genre_name).filter_by(id=record_id).join(Artist).join(Genre).one()
-    return render_template("records/record_info.html", record = record)
+    if 'username' not in login_session:
+        return render_template("records/record_info.html", record = record, loggedIn = False)
+    else:
+        return render_template("records/record_info.html", record = record, loggedIn = True)
 
 @recordBase.route('/records/<int:record_id>/json', methods=['GET'])
 def showRecordsInfoJSON0(record_id):
@@ -64,7 +67,10 @@ def showRecordsInfoJSON0(record_id):
 def showArtists():
     
     artists = db.session.query(Artist).all()
-    return render_template("artists/artists.html", artists = artists)
+    if 'username' not in login_session:
+        return render_template("artists/artists.html", artists = artists, loggedIn = False)
+    else:
+        return render_template("artists/artists.html", artists = artists, loggedIn = True)
 
 @recordBase.route('/artists/json', methods=['GET'])
 def showArtistsJSON():
@@ -75,7 +81,10 @@ def showArtistsJSON():
 def showArtistInfo(artist_id):
     artist = db.session.query(Artist).filter_by(id=artist_id).one()
     records = db.session.query(Record).filter_by(artist_id=artist_id).all()
-    return render_template("artists/artist_info.html", artist = artist, records = records)
+    if 'username' not in login_session:
+        return render_template("artists/artist_info.html", artist = artist, records = records, loggedIn = False)
+    else:
+        return render_template("artists/artist_info.html", artist = artist, records = records, loggedIn = True)
 
 @recordBase.route('/artists/<int:artist_id>/json', methods=['GET'])
 def showArtistInfoJSON(record_id):
@@ -90,8 +99,10 @@ def showArtistInfoJSON(record_id):
 def showGenres():
     
     genres = db.session.query(Genre).all()
-    print genres
-    return render_template("genres/genres.html", genres = genres)
+    if 'username' not in login_session:
+        return render_template("genres/genres.html", genres = genres, loggedIn = False)
+    else:
+        return render_template("genres/genres.html", genres = genres, loggedIn = True)
 
 @recordBase.route('/genres/json', methods=['GET'])
 def showGenresJSON():
@@ -103,7 +114,10 @@ def showGenresJSON():
 def showGenreInfo(genre_id):
     genre = db.session.query(Genre).filter_by(id=genre_id).one()
     artists = db.session.query(Artist).filter_by(genre_id=genre_id).all()
-    return render_template("genres/genre_info.html", genre = genre, artists = artists)
+    if 'username' not in login_session:
+        return render_template("genres/genre_info.html", genre = genre, artists = artists, loggedIn = False)
+    else:
+        return render_template("genres/genre_info.html", genre = genre, artists = artists, loggedIn = True)
 
 @recordBase.route('/genres/<int:genre_id>/json', methods=['GET'])
 def showGenreInfoJSON(record_id):

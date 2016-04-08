@@ -9,13 +9,29 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/records">Catalog</a>
+            <a class="navbar-brand" href="/records">L-Records</a>
         </div>
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li>
-                    <a href="#">About</a>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Catalog<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/records">Records</a></li>
+                        {% if loggedIn %}
+                        <li><a href="/records/add">Add Records</a></li>{% endif %} {% if loggedIn %}
+                        <li><a href="/records/delete">Delete Records</a></li>{% endif %}
+                        <li role="separator" class="divider"></li>
+                        <li><a href="/genres">Genres</a></li>
+                        {% if loggedIn %}
+                        <li><a href="/genres/add">Add Genres</a></li>{% endif %} {% if loggedIn %}
+                        <li><a href="/genres/delete">Delete Genres</a></li>{% endif %}
+                        <li role="separator" class="divider"></li>
+                        <li><a href="/artists">Artists</a></li>
+                        {% if loggedIn %}
+                        <li><a href="/artists/add">Add Artists</a></li>{% endif %} {% if loggedIn %}
+                        <li><a href="/artists/delete">Delete Artists</a></li>{% endif %}
+                    </ul>
                 </li>
                 <li>
                     <a href="#">Blog</a>
