@@ -72,7 +72,7 @@ class Record(Base):
 	artist = db.relationship(Artist)
 	genre_id = db.Column(db.Integer, ForeignKey('genre.id'))
 	genre = db.relationship(Genre)
-	year = db.Column(db.String, nullable=False) #Not sure about this datatype
+	year = db.Column(db.String, nullable=False) 
 	description = db.Column(db.String, nullable=True)
 
 	@property

@@ -107,7 +107,6 @@ def showGenres():
 @recordBase.route('/genres/json', methods=['GET'])
 def showGenresJSON():
     genres = db.session.query(Genre).all()
-    print genres
     return jsonify(genres=[r.serialize for r in genres])
 
 @recordBase.route('/genres/<int:genre_id>/', methods=['GET', 'POST'])
