@@ -28,8 +28,13 @@ def showRecords():
 #    if 'username' not in login_session:
 #        return redirect('/login')
     if request.method == 'POST':
+        print 'test'
+        artist_id = db.session.query(Artist).filter_by(artist_name = request.form['artist_Sel']).one()
+        print artist_id
+        genre_id = db.session.query(Genre).filter_by(genre_name = request.form['genre_Sel'])
+        print genre_id
         newRecord = Record(
-            name=request.form['title'], )
+            title=request.form['title'], artist_id=artist_id, genre_id=genre_id, year=request.form['year'], description=request.form['description'])
         session.add(newRestaurant)
         flash('New Restaurant %s Successfully Created' % newRestaurant.name)
         session.commit()
@@ -37,6 +42,8 @@ def showRecords():
     artists = db.session.query(Artist).all()
     genres = db.session.query(Genre).all()
     if 'username' not in login_session:
+        print request.method
         return render_template("records/add_records.html", artists = artists, genres = genres, loggedIn = False)
     else:
+        print request.method
         return render_template("records/add_records.html", artists = artists, genres = genres, loggedIn = True)
