@@ -27,23 +27,22 @@ modificationBase = Blueprint('add', __name__, url_prefix='')
 def showRecords():
 #    if 'username' not in login_session:
 #        return redirect('/login')
+    print request.method
     if request.method == 'POST':
-        print 'test'
-        artist_id = db.session.query(Artist).filter_by(artist_name = request.form['artist_Sel']).one()
-        print artist_id
-        genre_id = db.session.query(Genre).filter_by(genre_name = request.form['genre_Sel'])
+        print 'entering post'
+        artist_id = db.session.query(Artist.id).filter_by(artist_name = request.form['artist_Sel']).one()
+        print artist_id[0]
+        genre_id = db.session.query(Genre.id).filter_by(genre_name = request.form['genre_Sel']).one()
         print genre_id
         newRecord = Record(
-            title=request.form['title'], artist_id=artist_id, genre_id=genre_id, year=request.form['year'], description=request.form['description'])
-        session.add(newRestaurant)
-        flash('New Restaurant %s Successfully Created' % newRestaurant.name)
-        session.commit()
-        return redirect(url_for('showRestaurants'))
+            title=request.form['title'], artist_id=int(artist_id[0]), genre_id=genre_id[0], year=int(request.form['year']), description=request.form['description'])
+        db.session.add(newRecord)
+        flash('New Record Successfully Created')
+        db.session.commit()
+        return redirect('/records')
     artists = db.session.query(Artist).all()
     genres = db.session.query(Genre).all()
     if 'username' not in login_session:
-        print request.method
         return render_template("records/add_records.html", artists = artists, genres = genres, loggedIn = False)
     else:
-        print request.method
         return render_template("records/add_records.html", artists = artists, genres = genres, loggedIn = True)

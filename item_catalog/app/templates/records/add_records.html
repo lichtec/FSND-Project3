@@ -13,7 +13,7 @@
                 <div class="row marketing">
                     <div class="form-group">
                         <label for="artist_Sel">Artist:</label>
-                        <select class="form-control" id="artist_Sel">
+                        <select class="form-control" id="artist_Sel" name='artist_Sel'>
                             {% for artist in artists %}
                             <option>{{ artist.artist_name }}</option>
                             {% endfor %}
@@ -23,7 +23,7 @@
                 <div class="row marketing">
                     <div class="form-group">
                         <label for="genre_Sel">Genre:</label>
-                        <select class="form-control" id="genre_Sel">
+                        <select class="form-control" id="genre_Sel" name='genre_Sel'>
                             {% for genre in genres %}
                             <option>{{ genre.genre_name }}</option>
                             {% endfor %}
