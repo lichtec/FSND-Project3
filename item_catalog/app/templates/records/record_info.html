@@ -1,17 +1,18 @@
 {% extends "main.html" %} {% block content %} {% include "header.html" %}
-        <div class="row text-center">
-            <div class="col-md-1 col-sm-1 hero-feature"></div>
-            <div class="col-md-10 col-sm-10 hero-feature">
-                <div class="thumbnail">
-                    <img src="http://placehold.it/800x500" alt="">
-                    <div class="caption">
-                        <h1>{{record.title}}</h1>
-                        <h4><a href="/artists/{{ record.artist_id }}">{{record.artist_name}}</a></h4>
-                        <h6>{{record.year}}</h6>
-                        <p>{{ record.description }}</p>
-                    </div>
-                </div>
+<div class="row text-center">
+    <div class="col-md-1 col-sm-1 hero-feature"></div>
+    <div class="col-md-10 col-sm-10 hero-feature">
+        <div class="thumbnail">
+            <img src="http://placehold.it/800x500" alt="">
+            <div class="caption">
+                <h1>{{record.title}}</h1>
+                <h4><a href="/artists/{{ record.artist_id }}">{{record.artist_name}}</a></h4>
+                <h6>{{record.year}}</h6>
+                <p>{{ record.description }}</p>
+                {% if loggedIn %} <a href="/records/delete/{{ record.id }}" class="btn btn-default">Delete Record</a> {% endif %}
             </div>
-            <div class="col-md-1 col-sm-1 hero-feature"></div>
         </div>
+    </div>
+    <div class="col-md-1 col-sm-1 hero-feature"></div>
+</div>
 {% endblock %}
