@@ -15,9 +15,10 @@
                     <a href="/records/{{ record.id }}" class="btn btn-default">More Info</a>
                 </p>
             </div>
-            {% if ({{loop.index%3:0}}) %}
-            <br> {% endIf %}
         </div>
+        {% if loop.index is divisibleby 3 %}
+        <br>
+        <br> {% endif %}
     </div>
     {% endfor %}
 

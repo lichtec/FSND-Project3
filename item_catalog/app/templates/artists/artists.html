@@ -11,6 +11,9 @@
                 </p>
             </div>
         </div>
+        {% if loop.index is divisibleby 3 %}
+        <br>
+        <br> {% endif %}
     </div>
     {% endfor %}
 
