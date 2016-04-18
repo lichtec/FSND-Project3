@@ -21,9 +21,9 @@ from app.records.record_model import Genre, Artist, Record
 modificationBase = Blueprint('add', __name__, url_prefix='')
 
 '''
-    set add methods
+    set record methods
 '''
-@modificationBase.route('/add/record', methods=['GET', 'POST'])
+@modificationBase.route('/records/add', methods=['GET', 'POST'])
 def addRecords():
 #    if 'username' not in login_session:
 #        return redirect('/login')
@@ -43,7 +43,45 @@ def addRecords():
     else:
         return render_template("records/add_records.html", artists = artists, genres = genres, loggedIn = True)
     
-@modificationBase.route('/records/<int:record_id>/delete/', methods=['GET', 'POST'])
+@modificationBase.route('/records/delete/<int:record_id>/', methods=['GET', 'POST'])
+def deleteRecords(record_id):
+#    if 'username' not in login_session:
+#        return redirect('/login')
+    recordToDelete = db.session.query(Record).filter_by(id=record_id).one()
+    if request.method == 'POST':
+        db.session.delete(recordToDelete)
+        flash('Record Successfully Deleted')
+        db.session.commit()
+        return redirect('/records')
+    if 'username' not in login_session:
+        return render_template("records/delete_record.html", record=recordToDelete, loggedIn = False)
+    else:
+        return render_template("records/delete_record.html", record=recordToDelete, loggedIn = True)
+    
+'''
+    set artist methods
+'''
+@modificationBase.route('/artists/add', methods=['GET', 'POST'])
+def addRecords():
+#    if 'username' not in login_session:
+#        return redirect('/login')
+    if request.method == 'POST':
+        artist_id = db.session.query(Artist.id).filter_by(artist_name = request.form['artist_Sel']).one()
+        genre_id = db.session.query(Genre.id).filter_by(genre_name = request.form['genre_Sel']).one()
+        newRecord = Record(
+            title=request.form['title'], artist_id=int(artist_id[0]), genre_id=genre_id[0], year=int(request.form['year']), description=request.form['description'])
+        db.session.add(newRecord)
+        flash('New Record Successfully Created')
+        db.session.commit()
+        return redirect('/records')
+    artists = db.session.query(Artist).all()
+    genres = db.session.query(Genre).all()
+    if 'username' not in login_session:
+        return render_template("records/add_records.html", artists = artists, genres = genres, loggedIn = False)
+    else:
+        return render_template("records/add_records.html", artists = artists, genres = genres, loggedIn = True)
+    
+@modificationBase.route('/artists/delete/<int:record_id>/', methods=['GET', 'POST'])
 def deleteRecords(record_id):
 #    if 'username' not in login_session:
 #        return redirect('/login')
