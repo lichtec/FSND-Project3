@@ -56,8 +56,8 @@ class Artist(Base):
         }     
 
     # New instance instantiation procedure
-	def __init__(self, name, genre_id):
-		self.name     = name
+	def __init__(self, artist_name, genre_id):
+		self.artist_name     = artist_name
 		self.genre_id = genre_id
 
 	def __repr__(self):
