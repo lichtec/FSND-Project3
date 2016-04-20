@@ -32,8 +32,8 @@ class Genre(Base):
                 }
 
     # New instance instantiation procedure
-	def __init__(self, name, description):
-		self.name = name
+	def __init__(self, genre_name, description):
+		self.genre_name = genre_name
 		self.description = description
 	def __repr__(self):
 		return '<Genre %r>' % (self.genre_name)

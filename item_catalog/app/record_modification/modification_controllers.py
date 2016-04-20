@@ -15,7 +15,7 @@ import json
 from app import db
 
 # Import module models (i.e. User)
-from app.records.record_model import Genre, Artist, Record
+from app.records.record_model import Genre, Genre, Record
 
 # Define the blueprint: 'add', set its url prefix: app.url/
 modificationBase = Blueprint('add', __name__, url_prefix='')
@@ -28,7 +28,7 @@ def addRecords():
 #    if 'username' not in login_session:
 #        return redirect('/login')
     if request.method == 'POST':
-        artist_id = db.session.query(Artist.id).filter_by(artist_name = request.form['artist_Sel']).one()
+        Genre_id = db.session.query(Artist.id).filter_by(artist_name = request.form['artist_Sel']).one()
         genre_id = db.session.query(Genre.id).filter_by(genre_name = request.form['genre_Sel']).one()
         newRecord = Record(
             title=request.form['title'], artist_id=int(artist_id[0]), genre_id=genre_id[0], year=int(request.form['year']), description=request.form['description'])
@@ -90,6 +90,41 @@ def deleteArtist(artist_id):
         db.session.commit()
         return redirect('/artists')
     if 'username' not in login_session:
-        return render_template("artists/delete_artist.html", artist=artistToDelete, loggedIn = False)
+        return render_template("/artists/delete_artist.html", artist=artistToDelete, loggedIn = False)
     else:
-        return render_template("artists/delete_artist.html", artist=artistToDelete, loggedIn = True)
+        return render_template("/artists/delete_artist.html", artist=artistToDelete, loggedIn = True)
+    
+'''
+    set genre methods
+'''
+@modificationBase.route('/genres/add', methods=['GET', 'POST'])
+def addGenre():
+#    if 'username' not in login_session:
+#        return redirect('/login')
+    if request.method == 'POST':
+        print request.form['genre_name']
+        print request.form['genre_description']
+        newGenre = Genre(genre_name=request.form['genre_name'], description=request.form['genre_description'])
+        db.session.add(newGenre)
+        flash('New Genre Successfully Created')
+        db.session.commit()
+        return redirect('/genres')
+    if 'username' not in login_session:
+        return render_template("genres/add_genres.html", loggedIn = False)
+    else:
+        return render_template("genres/add_genres.html", loggedIn = True)
+    
+@modificationBase.route('/genres/<int:genre_id>/delete', methods=['GET', 'POST'])
+def deleteGenre(genre_id):
+#    if 'username' not in login_session:
+#        return redirect('/login')
+    genreToDelete = db.session.query(Genre).filter_by(id=genre_id).one()
+    if request.method == 'POST':
+        db.session.delete(genreToDelete)
+        flash('Genre Successfully Deleted')
+        db.session.commit()
+        return redirect('/genres')
+    if 'username' not in login_session:
+        return render_template("/genres/delete_genres.html", genre=genreToDelete, loggedIn = False)
+    else:
+        return render_template("/genres/delete_genres.html", genre=genreToDelete, loggedIn = True)
