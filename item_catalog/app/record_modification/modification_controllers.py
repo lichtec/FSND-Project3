@@ -45,26 +45,37 @@ def addRecords():
 
 @modificationBase.route('/records/<int:record_id>/edit', methods=['GET', 'POST'])
 def editRecords(record_id):
-    if 'username' not in login_session:
-        return redirect('/login')
-    editRecord = db.session.query(Record.id, Record.title, Record.year, Record.description, Record.artist_id, Artist.artist_name, 
+#    if 'username' not in login_session:
+#        return redirect('/login')
+    record = db.session.query(Record.id, Record.title, Record.year, Record.description, Record.artist_id, Artist.artist_name, 
         Genre.genre_name).filter_by(id=record_id).join(Artist).join(Genre).one()
     artists = db.session.query(Artist).all()
     genres = db.session.query(Genre).all()
     if request.method == 'POST':
-        artist_id = db.session.query(Artist.id).filter_by(artist_name = request.form['artist_Sel']).one()
-        genre_id = db.session.query(Genre.id).filter_by(genre_name = request.form['genre_Sel']).one()
-        updateRecord = Record(
-            title=request.form['title'], artist_id=int(artist_id[0]), genre_id=genre_id[0], year=int(request.form['year']), description=request.form['description'])
-        db.session.add(newRecord)
-        flash('New Record Successfully Created')
+        editRecord = db.session.query(Record).filter_by(id = record_id).one()
+        print editRecord
+        if request.form['title']:
+            editRecord.title = request.form['title']
+        if request.form['artist_Sel']:
+            artist_id = db.session.query(Artist.id).filter_by(artist_name = request.form['artist_Sel']).one()
+            print int(artist_id[0])
+            editRecord.artist_id = int(artist_id[0])
+        if request.form['genre_Sel']:
+            genre_id = db.session.query(Genre.id).filter_by(genre_name = request.form['genre_Sel']).one()
+            editRecord.genre_id = int(genre_id[0])
+        if request.form['year']:
+            editRecord.year = int(request.form['year'])
+        if request.form['description']:
+            editRecord.description =  request.form['description']
+        db.session.add(editRecord)
+        flash('Updated Record Successfully')
         db.session.commit()
         return redirect('/records')
 
     if 'username' not in login_session:
-        return render_template("/records/edit_record.html", artists = artists, genres = genres, record=editRecord, loggedIn = False)
+        return render_template("/records/edit_record.html", artists = artists, genres = genres, record=record, loggedIn = False)
     else:
-        return render_template("/records/edit_record.html", artists = artists, genres = genres, record=editRecord, loggedIn = True)
+        return render_template("/records/edit_record.html", artists = artists, genres = genres, record=record, loggedIn = True)
     
 @modificationBase.route('/records/<int:record_id>/delete', methods=['GET', 'POST'])
 def deleteRecords(record_id):
@@ -101,6 +112,36 @@ def addArtist():
         return render_template("artists/add_artists.html", artists = artists, genres = genres, loggedIn = False)
     else:
         return render_template("artists/add_artists.html", artists = artists, genres = genres, loggedIn = True)
+
+@modificationBase.route('/artist/<int:artist_id>/edit', methods=['GET', 'POST'])
+def editArtists(record_id):
+#    if 'username' not in login_session:
+#        return redirect('/login')
+    genre_id = db.session.query(Genre.id).filter_by(genre_name = request.form['genre_Sel']).one()
+    if request.method == 'POST':
+        editRecord = db.session.query(Record).filter_by(id = record_id).one()
+        print editRecord
+        if request.form['title']:
+            editRecord.title = request.form['title']
+        if request.form['artist_Sel']:
+            artist_id = db.session.query(Artist.id).filter_by(artist_name = request.form['artist_Sel']).one()
+            print int(artist_id[0])
+            editRecord.artist_id = int(artist_id[0])
+        if request.form['genre_Sel']:
+            genre_id = db.session.query(Genre.id).filter_by(genre_name = request.form['genre_Sel']).one()
+            editRecord.genre_id = int(genre_id[0])
+        if request.form['year']:
+            editRecord.year = int(request.form['year'])
+        if request.form['description']:
+            editRecord.description =  request.form['description']
+        db.session.add(editRecord)
+        flash('Updated Record Successfully')
+        db.session.commit()
+        return redirect('/records')
+    if 'username' not in login_session:
+        return render_template("/records/edit_record.html", artists = artists, genres = genres, record=record, loggedIn = False)
+    else:
+        return render_template("/records/edit_record.html", artists = artists, genres = genres, record=record, loggedIn = True)
     
 @modificationBase.route('/artists/<int:artist_id>/delete', methods=['GET', 'POST'])
 def deleteArtist(artist_id):

@@ -8,7 +8,7 @@
             <div class="form-group">
                 <div class="row marketing">
                     <label for="title">Title:</label>
-                    <input type="text" class="form-control" maxlength="100" name="title"></input>
+                    <input type="text" class="form-control" maxlength="100" name="title" placeholder="{{ record.title }}"></input>
                 </div>
                 <div class="row marketing">
                     <div class="form-group">
@@ -32,11 +32,11 @@
                 </div>
                 <div class="row marketing">
                     <label for="year">Year</label>
-                    <input type="text" class="form-control" maxlength="4" name="year"></input>
+                    <input type="text" class="form-control" maxlength="4" name="year" placeholder="{{ record.year }}"></input>
                 </div>
                 <div class="row marketing" style="text-align:center vertical-align:middle">
                     <label for="description">Description:</label>
-                    <textarea class="form-control" maxlength="250" rows="3" name="description" placeholder="Description of the Record"></textarea>
+                    <textarea class="form-control" maxlength="250" rows="3" name="description" placeholder="{{ record.description }}"></textarea>
                 </div>
                 <br>
                 <div class="padding-bottom"></div>
