@@ -8,14 +8,14 @@
             <div class="form-group">
                 <div class="row marketing">
                     <label for="title">Artist Name:</label>
-                    <input type="text" class="form-control" maxlength="100" name="artist_name"></input>
+                    <input type="text" class="form-control" maxlength="100" name="artist_name" placeholder="{{artist.artist_name}}"></input>
                 </div>
                 <div class="row marketing">
                     <div class="form-group">
                         <label for="genre_Sel">Genre:</label>
                         <select class="form-control" id="genre_Sel" name='genre_Sel'>
                             {% for genre in genres %}
-                            <option>{{ genre.genre_name }}</option>
+                            <option {% if artist.genre_id==genre.id %}SELECTED{% endif %}>{{ genre.genre_name }}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -24,7 +24,7 @@
                 <div class="padding-bottom"></div>
                 <div class="row marketing">
                     <button type="submit" class="btn btn-default" id="submit" type="submit">
-                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>Create</button>
+                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>Update</button>
                 </div>
             </div>
         </form>
