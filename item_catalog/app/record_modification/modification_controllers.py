@@ -156,8 +156,8 @@ def deleteArtist(artist_id):
 '''
 @modificationBase.route('/genres/add', methods=['GET', 'POST'])
 def addGenre():
-#    if 'username' not in login_session:
-#        return redirect('/login')
+    if 'username' not in login_session:
+        return redirect('/login')
     if request.method == 'POST':
         newGenre = Genre(genre_name=request.form['genre_name'], description=request.form['genre_description'])
         db.session.add(newGenre)
@@ -171,8 +171,8 @@ def addGenre():
 
 @modificationBase.route('/genres/<int:genre_id>/edit', methods=['GET', 'POST'])
 def editGenre(genre_id):
-#    if 'username' not in login_session:
-#        return redirect('/login')
+    if 'username' not in login_session:
+        return redirect('/login')
     editGenre = db.session.query(Genre).filter_by(id=genre_id).one()
     if request.method == 'POST':
         if(request.form['genre_name']):
@@ -191,13 +191,16 @@ def editGenre(genre_id):
 def deleteGenre(genre_id):
     if 'username' not in login_session:
         return redirect('/login')
+    
     genreToDelete = db.session.query(Genre).filter_by(id=genre_id).one()
+    relatedArtists = db.session.query(Artist).filter_by(genre_id=genre_id).all()
+    relatedRecords = db.session.query(Records).filter_by(genre_id=genre_id).all()
     if request.method == 'POST':
         db.session.delete(genreToDelete)
         flash('Genre Successfully Deleted')
         db.session.commit()
         return redirect('/genres')
     if 'username' not in login_session:
-        return render_template("/genres/delete_genres.html", genre=genreToDelete, loggedIn = False)
+        return render_template("/genres/delete_genres.html", genre=genreToDelete, artists=relatedArtists, records=relatedRecords, loggedIn = False)
     else:
-        return render_template("/genres/delete_genres.html", genre=genreToDelete, loggedIn = True)
+        return render_template("/genres/delete_genres.html", genre=genreToDelete, artists=relatedArtists, records=relatedRecords, loggedIn = True)
