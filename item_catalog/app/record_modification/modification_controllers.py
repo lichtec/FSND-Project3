@@ -159,8 +159,6 @@ def addGenre():
 #    if 'username' not in login_session:
 #        return redirect('/login')
     if request.method == 'POST':
-        print request.form['genre_name']
-        print request.form['genre_description']
         newGenre = Genre(genre_name=request.form['genre_name'], description=request.form['genre_description'])
         db.session.add(newGenre)
         flash('New Genre Successfully Created')
@@ -170,7 +168,25 @@ def addGenre():
         return render_template("genres/add_genres.html", loggedIn = False)
     else:
         return render_template("genres/add_genres.html", loggedIn = True)
-    
+
+@modificationBase.route('/genres/<int:genre_id>/edit', methods=['GET', 'POST'])
+def editGenre(genre_id):
+#    if 'username' not in login_session:
+#        return redirect('/login')
+    editGenre = db.session.query(Genre).filter_by(id=genre_id).one()
+    if request.method == 'POST':
+        if(request.form['genre_name']):
+            editGenre.genre_name = request.form['genre_name']
+        if(request.form['genre_description']):
+            editGenre.description = request.form['genre_description']
+        db.session.add(editGenre)
+        flash('Genre Successfully Updated')
+        db.session.commit()
+        return redirect('/genres')
+    if 'username' not in login_session:
+        return render_template("genres/edit_genres.html", genre=editGenre, loggedIn = False)
+    else:
+        return render_template("genres/edit_genres.html", genre=editGenre, loggedIn = True)    
 @modificationBase.route('/genres/<int:genre_id>/delete', methods=['GET', 'POST'])
 def deleteGenre(genre_id):
     if 'username' not in login_session:
