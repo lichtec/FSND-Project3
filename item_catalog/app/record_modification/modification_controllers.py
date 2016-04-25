@@ -189,8 +189,8 @@ def editGenre(genre_id):
         return render_template("genres/edit_genres.html", genre=editGenre, loggedIn = True)    
 @modificationBase.route('/genres/<int:genre_id>/delete', methods=['GET', 'POST'])
 def deleteGenre(genre_id):
-    if 'username' not in login_session:
-        return redirect('/login')
+#    if 'username' not in login_session:
+#        return redirect('/login')
     
     genreToDelete = db.session.query(Genre).filter_by(id=genre_id).one()
     relatedArtists = db.session.query(Artist).filter_by(genre_id=genre_id).all()
