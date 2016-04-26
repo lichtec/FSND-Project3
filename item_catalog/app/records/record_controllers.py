@@ -30,7 +30,7 @@ recordBase = Blueprint('record', __name__, url_prefix='')
 @recordBase.route('/records', methods=['GET', 'POST'])
 def showRecords():
     records = db.session.query(Record.id, Record.title, Record.year, Record.description, Record.artist_id, Artist.artist_name, 
-        Genre.genre_name).join(Artist).join(Genre).all()
+        Genre.genre_name).outerjoin(Artist).outerjoin(Genre).all()
     if 'username' not in login_session:
         return render_template("records/records.html", records = records, loggedIn = False)
     else:
@@ -47,7 +47,7 @@ def showRecordsJSON():
 @recordBase.route('/records/<int:record_id>/', methods=['GET', 'POST'])
 def showRecordInfo(record_id):
     record = db.session.query(Record.id, Record.title, Record.year, Record.description, Record.artist_id, Artist.artist_name, 
-        Genre.genre_name).filter_by(id=record_id).join(Artist).join(Genre).one()
+        Genre.genre_name).filter_by(id=record_id).outerjoin(Artist).outerjoin(Genre).one()
     if 'username' not in login_session:
         return render_template("records/record_info.html", record = record, loggedIn = False)
     else:
@@ -112,7 +112,7 @@ def showGenresJSON():
 @recordBase.route('/genres/<int:genre_id>/', methods=['GET', 'POST'])
 def showGenreInfo(genre_id):
     genre = db.session.query(Genre).filter_by(id=genre_id).one()
-    artists = db.session.query(Artist).filter_by(genre_id=genre_id).all()
+    artists = db.session.query(Artist).filter_by(genre_id=genre_id)
     if 'username' not in login_session:
         return render_template("genres/genre_info.html", genre = genre, artists = artists, loggedIn = False)
     else:

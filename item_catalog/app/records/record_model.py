@@ -43,7 +43,7 @@ class Artist(Base):
 	
 	id = db.Column(db.Integer, primary_key=True)
 	artist_name = db.Column(db.String(250), nullable=False)
-	genre_id = db.Column(db.Integer, ForeignKey('genre.id'))
+	genre_id = db.Column(db.Integer, ForeignKey('genre.id'), nullable=True)
 	genre = db.relationship(Genre)
 
 	@property
@@ -70,7 +70,7 @@ class Record(Base):
 	title = db.Column(db.String(250), nullable=False)
 	artist_id = db.Column(db.Integer, ForeignKey('artist.id'))
 	artist = db.relationship(Artist)
-	genre_id = db.Column(db.Integer, ForeignKey('genre.id'))
+	genre_id = db.Column(db.Integer, ForeignKey('genre.id'), nullable=True)
 	genre = db.relationship(Genre)
 	year = db.Column(db.String, nullable=False) 
 	description = db.Column(db.String, nullable=True)
