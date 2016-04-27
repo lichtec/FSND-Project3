@@ -23,6 +23,20 @@
             <span class="g-signin" data-scope="openid email" data-clientid="821825718249-6am7odj81p1gvdu7q1jfmpsd8v7ugu76.apps.googleusercontent.com" data-redirecturi="postmessage" data-accesstype="offline" data-cookiepolicy="single_host_origin" data-callback="signInCallback" data-approvalprompt="force">
           </span>
         </div>
+
+    </row>
+    <br>
+    <br>
+    <br>
+    <row>
+        <div>
+            <span><button>
+                <fb:login-button scope="public_profile,email" onlogin="sendTokenToServer();">
+                    <a href='javascript:sendTokenToServer()'>Login with Facebook</a>
+                </fb:login-button>
+            </button></span>
+
+        </div>
     </row>
 </div>
 
@@ -108,7 +122,7 @@
                     if (result) {
                         $('#result').html('Login Successful!</br>' + result + '</br>Redirecting...')
                         setTimeout(function() {
-                            window.location.href = "/restaurant";
+                            window.location.href = "/record";
                         }, 4000);
 
                     } else {
@@ -123,15 +137,6 @@
 </script>
 
 
-<button>
 
-
-    <fb:login-button scope="public_profile,email" onlogin="sendTokenToServer();">
-        <a href='javascript:sendTokenToServer()'>Login with Facebook</a>
-
-    </fb:login-button>
-
-
-</button>
 <!--END FACEBOOK SIGN IN -->
 {% endblock %}
