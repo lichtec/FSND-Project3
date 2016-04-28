@@ -29,8 +29,9 @@ recordBase = Blueprint('record', __name__, url_prefix='')
 @recordBase.route('/', methods=['GET', 'POST'])
 @recordBase.route('/records', methods=['GET', 'POST'])
 def showRecords():
-    records = db.session.query(Record.id, Record.title, Record.year, Record.description, Record.artist_id, Artist.artist_name, 
+    records = db.session.query(Record.id, Record.title, Record.year, Record.description, Record.artist_id, Record.record_image, Artist.artist_name, 
         Genre.genre_name).outerjoin(Artist).outerjoin(Genre).all()
+    print records
     if 'username' not in login_session:
         return render_template("records/records.html", records = records, loggedIn = False)
     else:
