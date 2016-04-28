@@ -31,7 +31,7 @@ authBase = Blueprint('auth', __name__, url_prefix='')
 
 # User Helper Functions
 def createUser(login_session):
-    newUser = User(name=c, email=login_session[
+    newUser = User(name=login_session['username'], email=login_session[
                    'email'], picture=login_session['picture'])
     db.session.add(newUser)
     db.session.commit()
