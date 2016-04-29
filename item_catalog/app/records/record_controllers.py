@@ -47,8 +47,7 @@ def showRecordsJSON():
 
 @recordBase.route('/records/<int:record_id>/', methods=['GET', 'POST'])
 def showRecordInfo(record_id):
-    record = db.session.query(Record.id, Record.title, Record.year, Record.description, Record.artist_id, Artist.artist_name, 
-        Genre.genre_name).filter_by(id=record_id).outerjoin(Artist).outerjoin(Genre).one()
+    record = db.session.query(Record.id, Record.title, Record.year, Record.description, Record.artist_id, Record.record_image, Artist.artist_name, Genre.genre_name).filter_by(id=record_id).outerjoin(Artist).outerjoin(Genre).one()
     if 'username' not in login_session:
         return render_template("records/record_info.html", record = record, loggedIn = False)
     else:
