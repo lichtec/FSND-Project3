@@ -31,7 +31,7 @@ def addRecords():
         artist_id = db.session.query(Artist.id).filter_by(artist_name = request.form['artist_Sel']).one()
         genre_id = db.session.query(Genre.id).filter_by(genre_name = request.form['genre_Sel']).one()
         newRecord = Record(
-            title=request.form['title'], artist_id=int(artist_id[0]), genre_id=genre_id[0], year=int(request.form['year']), description=request.form['description'])
+            title=request.form['title'], artist_id=int(artist_id[0]), genre_id=genre_id[0], year=int(request.form['year']), description=request.form['description'], record_image = request.form['record_image'])
         db.session.add(newRecord)
         flash('New Record Successfully Created')
         db.session.commit()
@@ -67,6 +67,8 @@ def editRecords(record_id):
             editRecord.year = int(request.form['year'])
         if request.form['description']:
             editRecord.description =  request.form['description']
+        if request.form['record_image']:
+            editRecord.description =  request.form['record_image']
         db.session.add(editRecord)
         flash('Updated Record Successfully')
         db.session.commit()
@@ -101,7 +103,7 @@ def addArtist():
 #        return redirect('/login')
     if request.method == 'POST':
         genre_id = db.session.query(Genre.id).filter_by(genre_name = request.form['genre_Sel']).one()
-        newArtist = Artist(artist_name=request.form['artist_name'], genre_id=genre_id[0])
+        newArtist = Artist(artist_name=request.form['artist_name'], genre_id=genre_id[0], artist_image = request.form['artist_image'])
         db.session.add(newArtist)
         flash('New Artist Successfully Created')
         db.session.commit()
@@ -127,6 +129,8 @@ def editArtists(artist_id):
         if request.form['genre_Sel']:
             genre_id = db.session.query(Genre.id).filter_by(genre_name = request.form['genre_Sel']).one()
             editArtist.genre_id = int(genre_id[0])
+        if request.form['artist_image']:
+            editArtist.artist_image = request.form['artist_image']
         db.session.add(editArtist)
         flash('Updated Artist Successfully')
         db.session.commit()
@@ -163,7 +167,7 @@ def addGenre():
 #    if 'username' not in login_session:
 #        return redirect('/login')
     if request.method == 'POST':
-        newGenre = Genre(genre_name=request.form['genre_name'], description=request.form['genre_description'])
+        newGenre = Genre(genre_name=request.form['genre_name'], description=request.form['genre_description'], genre_image=request.form['genre_image'])
         db.session.add(newGenre)
         flash('New Genre Successfully Created')
         db.session.commit()
