@@ -3,7 +3,7 @@
     {% for artist in artists %}
     <div class="col-md-3 col-sm-6 hero-feature">
         <div class="thumbnail">
-            <img src="http://placehold.it/800x500" alt="">
+            <img src="{{ artist.artist_image }}" alt="">
             <div class="caption">
                 <h1>{{artist.artist_name}}</h1>
                 <p>

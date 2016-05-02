@@ -3,7 +3,7 @@
     {% for genre in genres %}
     <div class="col-md-3 col-sm-6 hero-feature">
         <div class="thumbnail">
-            <img src="http://placehold.it/800x500" alt="">
+            <img src="{{ genre.genre_image }}" alt="">
             <div class="caption">
                 <h1>{{ genre.genre_name }}</h1>
                 <h4>{{ genre.description }}</h4>

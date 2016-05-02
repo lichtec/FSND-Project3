@@ -68,7 +68,7 @@ def editRecords(record_id):
         if request.form['description']:
             editRecord.description =  request.form['description']
         if request.form['record_image']:
-            editRecord.description =  request.form['record_image']
+            editRecord.record_image =  request.form['record_image']
         db.session.add(editRecord)
         flash('Updated Record Successfully')
         db.session.commit()
@@ -187,6 +187,8 @@ def editGenre(genre_id):
             editGenre.genre_name = request.form['genre_name']
         if(request.form['genre_description']):
             editGenre.description = request.form['genre_description']
+        if(request.form['genre_image']):
+            editGenre.genre_image = request.form['genre_image']
         db.session.add(editGenre)
         flash('Genre Successfully Updated')
         db.session.commit()

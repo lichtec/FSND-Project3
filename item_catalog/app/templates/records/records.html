@@ -3,7 +3,7 @@
     {% for record in records %}
     <div class="col-md-3 col-sm-6 hero-feature" style="margin: 40px;">
         <div class="thumbnail">
-            <img src="http://placehold.it/800x500" alt="">
+            <img src="{{ record.record_image }}" alt="">
             <div class="caption">
                 <div class="row">
                     <h2>{{record.title}}</h2></div>
