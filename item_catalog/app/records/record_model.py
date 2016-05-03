@@ -6,12 +6,12 @@ from sqlalchemy import create_engine
 from app import db
 
 class Base(db.Model):
-
-	__abstract__ = True
-
-	id = db.Column(db.Integer, primary_key=True)
-	date_created  = db.Column(db.DateTime, default=db.func.current_timestamp())
-	date_modified = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
+    
+    __abstract__ = True
+    
+    id = db.Column(db.Integer, primary_key=True)
+    date_created  = db.Column(db.DateTime, default=db.func.current_timestamp())
+    date_modified = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
 
 # Base = declarative_base()
 
@@ -31,7 +31,7 @@ class Genre(Base):
             'id': self.id,
             'name': self.genre_name,
 			'description' : self.description,
-            'image' :   self.genre_image
+            'image' :   self.genre_image,
             }
 
     # New instance instantiation procedure
@@ -39,7 +39,8 @@ class Genre(Base):
 		self.genre_name = genre_name
 		self.description = description
         self.genre_image = genre_image
-	def __repr__(self):
+
+    def __repr__(self):
 		return '<Genre %r>' % (self.genre_name)
 
 class Artist(Base):
@@ -59,7 +60,7 @@ class Artist(Base):
             'name': self.artist_name,
             'id': self.id,
             'genre_id'  : self.genre_id,
-            'image': self.artist_image
+            'image': self.artist_image,
         }     
 
     # New instance instantiation procedure
@@ -95,7 +96,7 @@ class Record(Base):
             'description' : self.description,
             'artist_id' :   self.artist_id,
             'genre_id'  : self.genre_id,
-            'image' : self.record_image
+            'image' : self.record_image,
         }
     # New instance instantiation procedure
 	def __init__(self, title, artist_id, genre_id, year, description, record_image):
