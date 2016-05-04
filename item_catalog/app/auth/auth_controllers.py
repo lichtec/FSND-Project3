@@ -186,6 +186,8 @@ def gdisconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
 
+    
+#Facebook Auth    
 @authBase.route('/fbconnect', methods=['POST'])
 def fbconnect():
     if request.args.get('state') != login_session['state']:

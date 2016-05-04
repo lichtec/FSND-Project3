@@ -15,7 +15,7 @@
                         <label for="genre_Sel">Genre:</label>
                         <select class="form-control" id="genre_Sel" name='genre_Sel'>
                             {% for genre in genres %}
-                            <option>{{ genre.genre_name }}</option>
+                            <option title={{ genre.id }}>{{ genre.genre_name }}</option>
                             {% endfor %}
                         </select>
                     </div>

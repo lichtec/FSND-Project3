@@ -21,13 +21,16 @@ from app.records.record_model import Genre, Artist, Record
 modificationBase = Blueprint('add', __name__, url_prefix='')
 
 '''
-    set record methods
+    set record modification methods
 '''
 @modificationBase.route('/records/add', methods=['GET', 'POST'])
 def addRecords():
+    #test for user being logged in
     if 'username' not in login_session:
         return redirect('/login')
+    
     if request.method == 'POST':
+        #Pull the artist id and genre id based on the name to create the record
         artist_id = db.session.query(Artist.id).filter_by(artist_name = request.form['artist_Sel']).one()
         genre_id = db.session.query(Genre.id).filter_by(genre_name = request.form['genre_Sel']).one()
         newRecord = Record(
@@ -36,6 +39,8 @@ def addRecords():
         flash('New Record Successfully Created')
         db.session.commit()
         return redirect('/records')
+    
+    #Pull all artists and genres to pass to the add artists html
     artists = db.session.query(Artist).all()
     genres = db.session.query(Genre).all()
     if 'username' not in login_session:
@@ -45,10 +50,15 @@ def addRecords():
 
 @modificationBase.route('/records/<int:record_id>/edit', methods=['GET', 'POST'])
 def editRecords(record_id):
+    #test for user being logged in
     if 'username' not in login_session:
         return redirect('/login')
+    
+    #Get the record that needs edited
     record = db.session.query(Record.id, Record.title, Record.year, Record.description, Record.artist_id, Record.record_image, Artist.artist_name, 
         Genre.genre_name).filter_by(id=record_id).join(Artist).join(Genre).one()
+    
+    #Pull all artists and genres for the edit page
     artists = db.session.query(Artist).all()
     genres = db.session.query(Genre).all()
     if request.method == 'POST':
@@ -81,8 +91,11 @@ def editRecords(record_id):
     
 @modificationBase.route('/records/<int:record_id>/delete', methods=['GET', 'POST'])
 def deleteRecords(record_id):
+    #test for user being logged in
     if 'username' not in login_session:
         return redirect('/login')
+    
+    #Get the record to delete
     recordToDelete = db.session.query(Record).filter_by(id=record_id).one()
     if request.method == 'POST':
         db.session.delete(recordToDelete)
@@ -99,6 +112,7 @@ def deleteRecords(record_id):
 '''
 @modificationBase.route('/artists/add', methods=['GET', 'POST'])
 def addArtist():
+    #test for user being logged in
     if 'username' not in login_session:
         return redirect('/login')
     if request.method == 'POST':
@@ -117,6 +131,7 @@ def addArtist():
 
 @modificationBase.route('/artists/<int:artist_id>/edit', methods=['GET', 'POST'])
 def editArtists(artist_id):
+    #test for user being logged in
     if 'username' not in login_session:
         return redirect('/login')
     genres = db.session.query(Genre).all()
@@ -142,6 +157,7 @@ def editArtists(artist_id):
     
 @modificationBase.route('/artists/<int:artist_id>/delete', methods=['GET', 'POST'])
 def deleteArtist(artist_id):
+    #test for user being logged in
     if 'username' not in login_session:
         return redirect('/login')
     artistToDelete = db.session.query(Artist).filter_by(id=artist_id).one()
@@ -164,6 +180,7 @@ def deleteArtist(artist_id):
 '''
 @modificationBase.route('/genres/add', methods=['GET', 'POST'])
 def addGenre():
+    #test for user being logged in
     if 'username' not in login_session:
         return redirect('/login')
     if request.method == 'POST':
@@ -179,6 +196,7 @@ def addGenre():
 
 @modificationBase.route('/genres/<int:genre_id>/edit', methods=['GET', 'POST'])
 def editGenre(genre_id):
+    #test for user being logged in
     if 'username' not in login_session:
         return redirect('/login')
     editGenre = db.session.query(Genre).filter_by(id=genre_id).one()
@@ -199,6 +217,7 @@ def editGenre(genre_id):
         return render_template("genres/edit_genres.html", genre=editGenre, loggedIn = True)    
 @modificationBase.route('/genres/<int:genre_id>/delete', methods=['GET', 'POST'])
 def deleteGenre(genre_id):
+    #test for user being logged in
     if 'username' not in login_session:
         return redirect('/login')
     
