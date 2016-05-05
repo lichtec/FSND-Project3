@@ -5,16 +5,17 @@ from sqlalchemy import create_engine
 
 from app import db
 
+
 class Base(db.Model):
+    #Base model for subsequent models
+    #Auth model also uses this base model
     
     __abstract__ = True
     
     id = db.Column(db.Integer, primary_key=True)
     date_created  = db.Column(db.DateTime, default=db.func.current_timestamp())
     date_modified = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
-
-# Base = declarative_base()
-
+    
 class Genre(Base):
     
     __tablename__ = 'genre'
@@ -109,9 +110,3 @@ class Record(Base):
 
 	def __repr__(self):
 		return '<Record %r>' % (self.title)
-	
-
-# engine = create_engine('sqlite:///app/app.db')
-
-
-# Base.metadata.create_all(engine)

@@ -29,6 +29,8 @@ recordBase = Blueprint('record', __name__, url_prefix='')
 @recordBase.route('/', methods=['GET', 'POST'])
 @recordBase.route('/records', methods=['GET', 'POST'])
 def showRecords():
+    #pulling all record information takes some joins
+    #using outjoins to handle possible deletes of artists and genres
     records = db.session.query(Record.id, Record.title, Record.year, Record.description, Record.artist_id, Record.record_image, Artist.artist_name, 
         Genre.genre_name).outerjoin(Artist).outerjoin(Genre).all()
     print records
@@ -40,13 +42,13 @@ def showRecords():
 @recordBase.route('/json', methods=['GET'])
 @recordBase.route('/records/json', methods=['GET'])
 def showRecordsJSON():
-    #records = db.session.query(Record.id, Record.title, Record.year, Record.description, Artist.artist_name, 
-       # Genre.genre_name).join(Artist).join(Genre).all()
+    #For JSON endpoint using just record to simplify results
     records = db.session.query(Record).all()    
     return jsonify(records=[r.serialize for r in records])
 
 @recordBase.route('/records/<int:record_id>/', methods=['GET', 'POST'])
 def showRecordInfo(record_id):
+    #pulling individual record info
     record = db.session.query(Record.id, Record.title, Record.year, Record.description, Record.artist_id, Record.record_image, Artist.artist_name, Genre.genre_name).filter_by(id=record_id).outerjoin(Artist).outerjoin(Genre).one()
     if 'username' not in login_session:
         return render_template("records/record_info.html", record = record, loggedIn = False)
@@ -65,7 +67,6 @@ def showRecordsInfoJSON0(record_id):
 
 @recordBase.route('/artists', methods=['GET', 'POST'])
 def showArtists():
-    
     artists = db.session.query(Artist).all()
     if 'username' not in login_session:
         return render_template("artists/artists.html", artists = artists, loggedIn = False)
