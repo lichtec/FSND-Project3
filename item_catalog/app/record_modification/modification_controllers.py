@@ -26,8 +26,8 @@ modificationBase = Blueprint('add', __name__, url_prefix='')
 @modificationBase.route('/records/add', methods=['GET', 'POST'])
 def addRecords():
     #test for user being logged in
-    if 'username' not in login_session:
-        return redirect('/login')
+#    if 'username' not in login_session:
+#        return redirect('/login')
     
     if request.method == 'POST':
         #Pull the artist id and genre id based on the name to create the record
@@ -51,8 +51,8 @@ def addRecords():
 @modificationBase.route('/records/<int:record_id>/edit', methods=['GET', 'POST'])
 def editRecords(record_id):
     #test for user being logged in
-    if 'username' not in login_session:
-        return redirect('/login')
+#    if 'username' not in login_session:
+#        return redirect('/login')
     
     #Get the record that needs edited
     record = db.session.query(Record.id, Record.title, Record.year, Record.description, Record.artist_id, Record.record_image, Artist.artist_name, Genre.genre_name).filter_by(id=record_id).outerjoin(Artist).outerjoin(Genre).one()

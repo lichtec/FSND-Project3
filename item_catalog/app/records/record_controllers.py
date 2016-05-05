@@ -33,7 +33,6 @@ def showRecords():
     #using outjoins to handle possible deletes of artists and genres
     records = db.session.query(Record.id, Record.title, Record.year, Record.description, Record.artist_id, Record.record_image, Artist.artist_name, 
         Genre.genre_name).outerjoin(Artist).outerjoin(Genre).all()
-    print records
     if 'username' not in login_session:
         return render_template("records/records.html", records = records, loggedIn = False)
     else:

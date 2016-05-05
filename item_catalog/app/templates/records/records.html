@@ -1,7 +1,7 @@
 {% extends "main.html" %} {% block content %} {% include "header.html" %}
 <div class="row text-center">
     {% for record in records %}
-    <div class="col-md-3 col-sm-6 hero-feature" style="margin: 40px;">
+    <div class="col-md-3 col-sm-6" style="margin: 40px padding: 100px;">
         <div class="thumbnail">
             <img src="{{ record.record_image }}" alt="">
             <div class="caption">
@@ -16,9 +16,8 @@
                 </p>
             </div>
         </div>
-        {% if loop.index is divisibleby 3 %}
-        <br>
-        <br> {% endif %}
+
+        {% if loop.index is divisibleby 3 %} {% endif %}
     </div>
     {% endfor %}
 
