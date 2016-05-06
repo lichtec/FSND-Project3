@@ -14,9 +14,6 @@ import json
 # Import the database object from the main app module
 from app import db
 
-# Import module forms
-#from app.records.record_forms import LoginForm
-
 # Import module models 
 from app.records.record_model import Genre, Artist, Record
 

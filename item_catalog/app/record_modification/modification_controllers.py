@@ -33,8 +33,16 @@ def addRecords():
         #Pull the artist id and genre id based on the name to create the record
         artist_id = db.session.query(Artist.id).filter_by(artist_name = request.form['artist_Sel']).one()
         genre_id = db.session.query(Genre.id).filter_by(genre_name = request.form['genre_Sel']).one()
+        if(len(request.form['record_image']) > 0):
+            record_image = request.form['record_image']
+        else:
+            record_image = 'http://placehold.it/800x500'
+        if(len(request.form['year']) > 0):
+            year = int(request.form['year'])
+        else:
+            year = 0
         newRecord = Record(
-            title=request.form['title'], artist_id=int(artist_id[0]), genre_id=genre_id[0], year=int(request.form['year']), description=request.form['description'], record_image = request.form['record_image'])
+            title=request.form['title'], artist_id=int(artist_id[0]), genre_id=genre_id[0], year=year, description=request.form['description'], record_image = record_image)
         db.session.add(newRecord)
         flash('New Record Successfully Created')
         db.session.commit()
@@ -118,7 +126,11 @@ def addArtist():
     
     if request.method == 'POST':
         genre_id = db.session.query(Genre.id).filter_by(genre_name = request.form['genre_Sel']).one()
-        newArtist = Artist(artist_name=request.form['artist_name'], genre_id=genre_id[0], artist_image = request.form['artist_image'])
+        if(len(request.form['artist_image']) > 0):
+            artist_image = request.form['artist_image']
+        else:
+            artist_image = 'http://placehold.it/800x500'
+        newArtist = Artist(artist_name=request.form['artist_name'], genre_id=genre_id[0], artist_image = artist_image)
         db.session.add(newArtist)
         flash('New Artist Successfully Created')
         db.session.commit()
@@ -144,7 +156,7 @@ def editArtists(artist_id):
             editArtist.artist_name = request.form['artist_name']
         if request.form['genre_Sel']:
             genre_id = db.session.query(Genre.id).filter_by(genre_name = request.form['genre_Sel']).one()
-            editArtist.genre_id = int(genre_id[0])
+            editArtist.genre_id = genre_id[0]
         if request.form['artist_image']:
             editArtist.artist_image = request.form['artist_image']
         db.session.add(editArtist)
@@ -194,7 +206,11 @@ def addGenre():
         return redirect('/login')
     
     if request.method == 'POST':
-        newGenre = Genre(genre_name=request.form['genre_name'], description=request.form['genre_description'], genre_image=request.form['genre_image'])
+        if(len(request.form['genre_image']) > 0):
+            genre_image = request.form['genre_image']
+        else:
+            genre_image = 'http://placehold.it/800x500'
+        newGenre = Genre(genre_name=request.form['genre_name'], description=request.form['genre_description'], genre_image=genre_image)
         db.session.add(newGenre)
         flash('New Genre Successfully Created')
         db.session.commit()
