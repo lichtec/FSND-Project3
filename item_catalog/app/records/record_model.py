@@ -83,7 +83,7 @@ class Record(Base):
     artist = db.relationship(Artist)
     genre_id = db.Column(db.Integer, ForeignKey('genre.id'), nullable=True)
     genre = db.relationship(Genre)
-    year = db.Column(db.String, nullable=False) 
+    year = db.Column(db.Integer, nullable=False) 
     description = db.Column(db.String, nullable=True)
     record_image = db.Column(db.VARCHAR(200), nullable=True)
     
