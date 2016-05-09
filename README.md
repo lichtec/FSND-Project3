@@ -43,3 +43,5 @@ If you would like some test data follow the following steps. If not you are read
 
 3. After it completes, there are values in the db and you can rerun the previous steps to start the application.
 
+##Open Source Info
+* This application is using David Miller's template for Bootstrap. Please see the included folder for more information.
