@@ -1,6 +1,8 @@
 # Import flask dependencies
 from flask import Blueprint, request, render_template, flash, g, \
     session as login_session, redirect, url_for, jsonify
+    
+from functools import wraps
 
 from sqlalchemy import create_engine, asc, update
 from sqlalchemy.orm import sessionmaker
@@ -21,16 +23,40 @@ from app.records.record_model import Genre, Artist, Record
 modificationBase = Blueprint('add', __name__, url_prefix='')
 
 '''
+login required decorator
+'''
+def login_required(f):
+    """
+    login_required: declorator for requiring a user to be logged in
+    Args:
+        
+    Returns:
+        return a redirect or just returns
+    """
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'username' not in login_session:
+            return redirect(url_for('auth.login', next=request.url))
+        return f(*args, **kwargs)
+    return decorated_function
+
+'''
     set record modification methods
 '''
 
 
 @modificationBase.route('/records/add', methods=['GET', 'POST'])
+@login_required
 def addRecords():
-    # test for user being logged in
-    if 'username' not in login_session:
-        return redirect('/login')
-
+    """
+     
+        addRecords: Add records method. Uses form to create a new record.
+     
+        Args: none
+     
+        Returns:
+            return a redirect when successful
+    """
     if request.method == 'POST':
         # Pull the artist id and genre id based on the name to create the
         # record
@@ -70,11 +96,17 @@ def addRecords():
 @modificationBase.route('/records/<int:record_id>/edit', methods=['GET',
                                                                   'POST']
                         )
+@login_required
 def editRecords(record_id):
-    # test for user being logged in
-    if 'username' not in login_session:
-        return redirect('/login')
-
+    """
+     
+        editRecords: Updates record method. Uses form to update a specified record with info from the form.
+     
+        Args: record_id
+     
+        Returns:
+            return a redirect when successful
+    """
     # Get the record that needs edited
     record = db.session.query(Record.id, Record.title, Record.year,
                               Record.description, Record.artist_id,
@@ -121,11 +153,17 @@ def editRecords(record_id):
 
 @modificationBase.route('/records/<int:record_id>/delete', methods=['GET',
                                                                     'POST'])
+@login_required
 def deleteRecords(record_id):
-    # test for user being logged in
-    if 'username' not in login_session:
-        return redirect('/login')
-
+    """
+     
+        delete: Delete record method. Deletes the record.
+     
+        Args: record_id
+     
+        Returns:
+            return a redirect when successful
+    """
     # Get the record to delete
     recordToDelete = db.session.query(Record).filter_by(id=record_id).one()
     if request.method == 'POST':
@@ -147,11 +185,17 @@ def deleteRecords(record_id):
 
 
 @modificationBase.route('/artists/add', methods=['GET', 'POST'])
+@login_required
 def addArtist():
-    # test for user being logged in
-    if 'username' not in login_session:
-        return redirect('/login')
-
+    """
+     
+        addArtist: Add artist method. Creates new artist
+     
+        Args: 
+     
+        Returns:
+            return a redirect when successful
+    """
     if request.method == 'POST':
         genre_id = db.session.query(Genre.id).filter_by(
             genre_name=request.form['genre_Sel']).one()
@@ -178,11 +222,17 @@ def addArtist():
 
 @modificationBase.route('/artists/<int:artist_id>/edit', methods=['GET',
                                                                   'POST'])
+@login_required
 def editArtists(artist_id):
-    # test for user being logged in
-    if 'username' not in login_session:
-        return redirect('/login')
-
+    """
+     
+        editArtist: Edit artist method. Updates an artist based on info from the form
+     
+        Args: artist_id
+     
+        Returns:
+            return a redirect when successful
+    """
     editArtist = db.session.query(Artist).filter_by(id=artist_id).one()
 
     if request.method == 'POST':
@@ -211,11 +261,18 @@ def editArtists(artist_id):
 
 @modificationBase.route('/artists/<int:artist_id>/delete', methods=['GET',
                                                                     'POST'])
+@login_required
 def deleteArtist(artist_id):
-    # test for user being logged in
-    if 'username' not in login_session:
-        return redirect('/login')
-
+    """
+     
+        deleteArtist: Delete artist method. Deletes an artist
+     
+        Args: artist_id
+     
+        Returns:
+            return a redirect when successful
+            
+    """
     artistToDelete = db.session.query(Artist).filter_by(id=artist_id).one()
     # pull the records of that has this artist to delete as the artist
     relatedRecords = db.session.query(
@@ -246,11 +303,17 @@ def deleteArtist(artist_id):
 
 
 @modificationBase.route('/genres/add', methods=['GET', 'POST'])
+@login_required
 def addGenre():
-    # test for user being logged in
-    if 'username' not in login_session:
-        return redirect('/login')
-
+    """
+     
+        addGenre: Add genre method. Creates new genre
+     
+        Args: 
+     
+        Returns:
+            return a redirect when successful
+    """
     if request.method == 'POST':
         if(len(request.form['genre_image']) > 0):
             genre_image = request.form['genre_image']
@@ -271,45 +334,56 @@ def addGenre():
 
 
 @modificationBase.route('/genres/<int:genre_id>/edit', methods=['GET', 'POST'])
+@login_required
 def editGenre(genre_id):
-    # test for user being logged in
-    if 'username' not in login_session:
-        return redirect('/login')
+        """
+     
+        editGenre: Edit genre method. Updates genre from form info
+     
+        Args: genre_id
+     
+        Returns:
+            return a redirect when successful
+    """
+        editGenre = db.session.query(Genre).filter_by(id=genre_id).one()
 
-    editGenre = db.session.query(Genre).filter_by(id=genre_id).one()
+        if request.method == 'POST':
+            if(request.form['genre_name']):
+                editGenre.genre_name = request.form['genre_name']
+            if(request.form['genre_description']):
+                editGenre.description = request.form['genre_description']
+            if(request.form['genre_image']):
+                editGenre.genre_image = request.form['genre_image']
+            db.session.add(editGenre)
+            flash('Genre Successfully Updated')
+            db.session.commit()
+            return redirect('/genres')
 
-    if request.method == 'POST':
-        if(request.form['genre_name']):
-            editGenre.genre_name = request.form['genre_name']
-        if(request.form['genre_description']):
-            editGenre.description = request.form['genre_description']
-        if(request.form['genre_image']):
-            editGenre.genre_image = request.form['genre_image']
-        db.session.add(editGenre)
-        flash('Genre Successfully Updated')
-        db.session.commit()
-        return redirect('/genres')
-
-    if 'username' not in login_session:
-        return render_template("genres/edit_genres.html", genre=editGenre,
+        if 'username' not in login_session:
+            return render_template("genres/edit_genres.html", genre=editGenre,
                                loggedIn=False)
-    else:
-        return render_template("genres/edit_genres.html", genre=editGenre,
+        else:
+            return render_template("genres/edit_genres.html", genre=editGenre,
                                loggedIn=True)
 
 
 @modificationBase.route('/genres/<int:genre_id>/delete', methods=['GET',
                                                                   'POST'])
+@login_required
 def deleteGenre(genre_id):
-    # test for user being logged in
-    if 'username' not in login_session:
-        return redirect('/login')
-
+    """
+     
+        deleteGenre: Delete genre method. Deletes a genre
+     
+        Args: genre_id
+     
+        Returns:
+            return a redirect when successful
+    """
     genreToDelete = db.session.query(Genre).filter_by(id=genre_id).one()
 
     # pull related artists for this genre
-    relatedArtists = db.session.query(
-        Artist).filter_by(genre_id=genre_id).all()
+    relatedArtists = db.session.query(Artist).filter_by(genre_id=genre_id).all()
 
     # pull related records for this genre
     relatedRecords = db.session.query(

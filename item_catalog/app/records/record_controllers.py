@@ -80,7 +80,7 @@ def showArtists():
 @recordBase.route('/artists/json', methods=['GET'])
 def showArtistsJSON():
     artists = db.session.query(Artist).all()
-    return jsonify(records=[r.serialize for r in artists])
+    return jsonify(artists=[r.serialize for r in artists])
 
 
 @recordBase.route('/artists/<int:artist_id>/', methods=['GET', 'POST'])
@@ -94,7 +94,7 @@ def showArtistInfo(artist_id):
 
 
 @recordBase.route('/artists/<int:artist_id>/json', methods=['GET'])
-def showArtistInfoJSON(record_id):
+def showArtistInfoJSON(artist_id):
     artist = db.session.query(Artist).filter_by(id=artist_id).one()
     return jsonify(artist=[artist.serialize])
 
@@ -130,6 +130,7 @@ def showGenreInfo(genre_id):
 
 
 @recordBase.route('/genres/<int:genre_id>/json', methods=['GET'])
-def showGenreInfoJSON(record_id):
+def showGenreInfoJSON(genre_id):
+    genre = db.session.query(Genre).filter_by(id=genre_id).one()
     artist = db.session.query(Genre).filter_by(id=genre_id).one()
     return jsonify(genre=[genre.serialize])
