@@ -1,6 +1,6 @@
 # Import flask dependencies
-from flask import Blueprint, request, render_template, \
-                  flash, g, session as login_session, redirect, url_for, jsonify
+from flask import Blueprint, request, render_template, flash, g, \
+    session as login_session, redirect, url_for, jsonify
 
 from sqlalchemy import create_engine, asc, update
 from sqlalchemy.orm import sessionmaker
@@ -8,7 +8,7 @@ from sqlalchemy.orm import sessionmaker
 # Import password / encryption helper tools
 from werkzeug import check_password_hash, generate_password_hash
 
-#json for jsonify
+# json for jsonify
 import json
 
 # Import the database object from the main app module
@@ -17,22 +17,27 @@ from app import db
 # Import module models (i.e. User)
 from app.records.record_model import Genre, Artist, Record
 
-# Define the blueprint: 'add', set its url prefix: app.url/
+# Define the blueprint: 'add', set its url prefix: app.url
 modificationBase = Blueprint('add', __name__, url_prefix='')
 
 '''
     set record modification methods
 '''
+
+
 @modificationBase.route('/records/add', methods=['GET', 'POST'])
 def addRecords():
-    #test for user being logged in
-#    if 'username' not in login_session:
-#        return redirect('/login')
-    
+    # test for user being logged in
+    if 'username' not in login_session:
+        return redirect('/login')
+
     if request.method == 'POST':
-        #Pull the artist id and genre id based on the name to create the record
-        artist_id = db.session.query(Artist.id).filter_by(artist_name = request.form['artist_Sel']).one()
-        genre_id = db.session.query(Genre.id).filter_by(genre_name = request.form['genre_Sel']).one()
+        # Pull the artist id and genre id based on the name to create the
+        # record
+        artist_id = db.session.query(Artist.id).filter_by(
+            artist_name=request.form['artist_Sel']).one()
+        genre_id = db.session.query(Genre.id).filter_by(
+            genre_name=request.form['genre_Sel']).one()
         if(len(request.form['record_image']) > 0):
             record_image = request.form['record_image']
         else:
@@ -42,120 +47,150 @@ def addRecords():
         else:
             year = 0
         newRecord = Record(
-            title=request.form['title'], artist_id=int(artist_id[0]), genre_id=genre_id[0], year=year, description=request.form['description'], record_image = record_image)
+            title=request.form['title'], artist_id=int(artist_id[0]),
+            genre_id=genre_id[0], year=year,
+            description=request.form['description'],
+            record_image=record_image)
         db.session.add(newRecord)
         flash('New Record Successfully Created')
         db.session.commit()
         return redirect('/records')
-    
-    #Pull all artists and genres to pass to the add artists html
+
+    # Pull all artists and genres to pass to the add artists html
     artists = db.session.query(Artist).all()
     genres = db.session.query(Genre).all()
     if 'username' not in login_session:
-        return render_template("records/add_records.html", artists = artists, genres = genres, loggedIn = False)
+        return render_template("records/add_records.html", artists=artists,
+                               genres=genres, loggedIn=False)
     else:
-        return render_template("records/add_records.html", artists = artists, genres = genres, loggedIn = True)
+        return render_template("records/add_records.html", artists=artists,
+                               genres=genres, loggedIn=True)
 
-@modificationBase.route('/records/<int:record_id>/edit', methods=['GET', 'POST'])
+
+@modificationBase.route('/records/<int:record_id>/edit', methods=['GET',
+                                                                  'POST']
+                        )
 def editRecords(record_id):
-    #test for user being logged in
-#    if 'username' not in login_session:
-#        return redirect('/login')
-    
-    #Get the record that needs edited
-    record = db.session.query(Record.id, Record.title, Record.year, Record.description, Record.artist_id, Record.record_image, Artist.artist_name, Genre.genre_name).filter_by(id=record_id).outerjoin(Artist).outerjoin(Genre).one()
-    
+    # test for user being logged in
+    if 'username' not in login_session:
+        return redirect('/login')
+
+    # Get the record that needs edited
+    record = db.session.query(Record.id, Record.title, Record.year,
+                              Record.description, Record.artist_id,
+                              Record.record_image, Artist.artist_name,
+                              Genre.genre_name).filter_by(id=record_id) \
+    .outerjoin(Artist).outerjoin(Genre).one()
+
     if request.method == 'POST':
-        editRecord = db.session.query(Record).filter_by(id = record_id).one()
-        #test for new values from the form
+        editRecord = db.session.query(Record).filter_by(id=record_id).one()
+        # test for new values from the form
         if request.form['title']:
             editRecord.title = request.form['title']
         if request.form['artist_Sel']:
-            artist_id = db.session.query(Artist.id).filter_by(artist_name = request.form['artist_Sel']).one()
+            artist_id = db.session.query(Artist.id).filter_by(
+                artist_name=request.form['artist_Sel']).one()
             print int(artist_id[0])
             editRecord.artist_id = int(artist_id[0])
         if request.form['genre_Sel']:
-            genre_id = db.session.query(Genre.id).filter_by(genre_name = request.form['genre_Sel']).one()
+            genre_id = db.session.query(Genre.id).filter_by(
+                genre_name=request.form['genre_Sel']).one()
             editRecord.genre_id = int(genre_id[0])
         if request.form['year']:
             editRecord.year = int(request.form['year'])
         if request.form['description']:
-            editRecord.description =  request.form['description']
+            editRecord.description = request.form['description']
         if request.form['record_image']:
-            editRecord.record_image =  request.form['record_image']
+            editRecord.record_image = request.form['record_image']
         db.session.add(editRecord)
         flash('Updated Record Successfully')
         db.session.commit()
         return redirect('/records')
-    
-    #Pull all artists and genres for the edit page
+
+    # Pull all artists and genres for the edit page
     artists = db.session.query(Artist).all()
     genres = db.session.query(Genre).all()
     if 'username' not in login_session:
-        return render_template("/records/edit_record.html", artists = artists, genres = genres, record=record, loggedIn = False)
+        return render_template("/records/edit_record.html",
+                               artists=artists, genres=genres, record=record,
+                               loggedIn=False)
     else:
-        return render_template("/records/edit_record.html", artists = artists, genres = genres, record=record, loggedIn = True)
-    
-@modificationBase.route('/records/<int:record_id>/delete', methods=['GET', 'POST'])
+        return render_template("/records/edit_record.html", artists=artists,
+                               genres=genres, record=record, loggedIn=True)
+
+
+@modificationBase.route('/records/<int:record_id>/delete', methods=['GET',
+                                                                    'POST'])
 def deleteRecords(record_id):
-    #test for user being logged in
+    # test for user being logged in
     if 'username' not in login_session:
         return redirect('/login')
-    
-    #Get the record to delete
+
+    # Get the record to delete
     recordToDelete = db.session.query(Record).filter_by(id=record_id).one()
     if request.method == 'POST':
         db.session.delete(recordToDelete)
         flash('Record Successfully Deleted')
         db.session.commit()
         return redirect('/records')
-    
+
     if 'username' not in login_session:
-        return render_template("records/delete_record.html", record=recordToDelete, loggedIn = False)
+        return render_template("records/delete_record.html",
+                               record=recordToDelete, loggedIn=False)
     else:
-        return render_template("records/delete_record.html", record=recordToDelete, loggedIn = True)
-    
+        return render_template("records/delete_record.html",
+                               record=recordToDelete, loggedIn=True)
+
 '''
     set artist methods
 '''
+
+
 @modificationBase.route('/artists/add', methods=['GET', 'POST'])
 def addArtist():
-    #test for user being logged in
+    # test for user being logged in
     if 'username' not in login_session:
         return redirect('/login')
-    
+
     if request.method == 'POST':
-        genre_id = db.session.query(Genre.id).filter_by(genre_name = request.form['genre_Sel']).one()
+        genre_id = db.session.query(Genre.id).filter_by(
+            genre_name=request.form['genre_Sel']).one()
         if(len(request.form['artist_image']) > 0):
             artist_image = request.form['artist_image']
         else:
             artist_image = 'http://placehold.it/800x500'
-        newArtist = Artist(artist_name=request.form['artist_name'], genre_id=genre_id[0], artist_image = artist_image)
+        newArtist = Artist(artist_name=request.form['artist_name'],
+                           genre_id=genre_id[0], artist_image=artist_image)
         db.session.add(newArtist)
         flash('New Artist Successfully Created')
         db.session.commit()
         return redirect('/artists')
-    
+
     artists = db.session.query(Artist).all()
     genres = db.session.query(Genre).all()
     if 'username' not in login_session:
-        return render_template("artists/add_artists.html", artists = artists, genres = genres, loggedIn = False)
+        return render_template("artists/add_artists.html", artists=artists,
+                               genres=genres, loggedIn=False)
     else:
-        return render_template("artists/add_artists.html", artists = artists, genres = genres, loggedIn = True)
+        return render_template("artists/add_artists.html", artists=artists,
+                               genres=genres, loggedIn=True)
 
-@modificationBase.route('/artists/<int:artist_id>/edit', methods=['GET', 'POST'])
+
+@modificationBase.route('/artists/<int:artist_id>/edit', methods=['GET',
+                                                                  'POST'])
 def editArtists(artist_id):
-    #test for user being logged in
+    # test for user being logged in
     if 'username' not in login_session:
         return redirect('/login')
-    
-    editArtist = db.session.query(Artist).filter_by(id = artist_id).one()
-    
+
+    editArtist = db.session.query(Artist).filter_by(id=artist_id).one()
+
     if request.method == 'POST':
         if request.form['artist_name']:
             editArtist.artist_name = request.form['artist_name']
         if request.form['genre_Sel']:
-            genre_id = db.session.query(Genre.id).filter_by(genre_name = request.form['genre_Sel']).one()
+            genre_id = db.session.query(Genre.id).filter_by(
+                genre_name=request.form['genre_Sel']).one()
             editArtist.genre_id = genre_id[0]
         if request.form['artist_image']:
             editArtist.artist_image = request.form['artist_image']
@@ -163,26 +198,31 @@ def editArtists(artist_id):
         flash('Updated Artist Successfully')
         db.session.commit()
         return redirect('/artists')
-    
-    #Pull genres for edit html
+
+    # Pull genres for edit html
     genres = db.session.query(Genre).all()
     if 'username' not in login_session:
-        return render_template("/artists/edit_artist.html", artist = editArtist, genres = genres, loggedIn = False)
+        return render_template("/artists/edit_artist.html", artist=editArtist,
+                               genres=genres, loggedIn=False)
     else:
-        return render_template("/artists/edit_artist.html", artist = editArtist, genres = genres, loggedIn = True)
-    
-@modificationBase.route('/artists/<int:artist_id>/delete', methods=['GET', 'POST'])
+        return render_template("/artists/edit_artist.html", artist=editArtist,
+                               genres=genres, loggedIn=True)
+
+
+@modificationBase.route('/artists/<int:artist_id>/delete', methods=['GET',
+                                                                    'POST'])
 def deleteArtist(artist_id):
-    #test for user being logged in
+    # test for user being logged in
     if 'username' not in login_session:
         return redirect('/login')
-    
+
     artistToDelete = db.session.query(Artist).filter_by(id=artist_id).one()
-    #pull the records of that has this artist to delete as the artist
-    relatedRecords = db.session.query(Record).filter_by(artist_id=artist_id).all()
-    
+    # pull the records of that has this artist to delete as the artist
+    relatedRecords = db.session.query(
+        Record).filter_by(artist_id=artist_id).all()
+
     if request.method == 'POST':
-        #remove the artist id from the related records
+        # remove the artist id from the related records
         for record in relatedRecords:
             record.artist_id = None
             db.session.add(record)
@@ -190,45 +230,54 @@ def deleteArtist(artist_id):
         flash('Artist Successfully Deleted')
         db.session.commit()
         return redirect('/artists')
-    
+
     if 'username' not in login_session:
-        return render_template("/artists/delete_artist.html", artist=artistToDelete, records=relatedRecords, loggedIn = False)
+        return render_template("/artists/delete_artist.html",
+                               artist=artistToDelete, records=relatedRecords,
+                               loggedIn=False)
     else:
-        return render_template("/artists/delete_artist.html", artist=artistToDelete, records=relatedRecords, loggedIn = True)
-    
+        return render_template("/artists/delete_artist.html",
+                               artist=artistToDelete, records=relatedRecords,
+                               loggedIn=True)
+
 '''
     set genre methods
 '''
+
+
 @modificationBase.route('/genres/add', methods=['GET', 'POST'])
 def addGenre():
-    #test for user being logged in
+    # test for user being logged in
     if 'username' not in login_session:
         return redirect('/login')
-    
+
     if request.method == 'POST':
         if(len(request.form['genre_image']) > 0):
             genre_image = request.form['genre_image']
         else:
             genre_image = 'http://placehold.it/800x500'
-        newGenre = Genre(genre_name=request.form['genre_name'], description=request.form['genre_description'], genre_image=genre_image)
+        newGenre = Genre(genre_name=request.form['genre_name'],
+                         description=request.form[
+                         'genre_description'], genre_image=genre_image)
         db.session.add(newGenre)
         flash('New Genre Successfully Created')
         db.session.commit()
         return redirect('/genres')
-    
+
     if 'username' not in login_session:
-        return render_template("genres/add_genres.html", loggedIn = False)
+        return render_template("genres/add_genres.html", loggedIn=False)
     else:
-        return render_template("genres/add_genres.html", loggedIn = True)
+        return render_template("genres/add_genres.html", loggedIn=True)
+
 
 @modificationBase.route('/genres/<int:genre_id>/edit', methods=['GET', 'POST'])
 def editGenre(genre_id):
-    #test for user being logged in
+    # test for user being logged in
     if 'username' not in login_session:
         return redirect('/login')
-    
+
     editGenre = db.session.query(Genre).filter_by(id=genre_id).one()
-    
+
     if request.method == 'POST':
         if(request.form['genre_name']):
             editGenre.genre_name = request.form['genre_name']
@@ -240,26 +289,32 @@ def editGenre(genre_id):
         flash('Genre Successfully Updated')
         db.session.commit()
         return redirect('/genres')
-    
-    if 'username' not in login_session:
-        return render_template("genres/edit_genres.html", genre=editGenre, loggedIn = False)    
-    else:
-        return render_template("genres/edit_genres.html", genre=editGenre, loggedIn = True)    
 
-@modificationBase.route('/genres/<int:genre_id>/delete', methods=['GET', 'POST'])
+    if 'username' not in login_session:
+        return render_template("genres/edit_genres.html", genre=editGenre,
+                               loggedIn=False)
+    else:
+        return render_template("genres/edit_genres.html", genre=editGenre,
+                               loggedIn=True)
+
+
+@modificationBase.route('/genres/<int:genre_id>/delete', methods=['GET',
+                                                                  'POST'])
 def deleteGenre(genre_id):
-    #test for user being logged in
+    # test for user being logged in
     if 'username' not in login_session:
         return redirect('/login')
-    
+
     genreToDelete = db.session.query(Genre).filter_by(id=genre_id).one()
-    
-    #pull related artists for this genre
-    relatedArtists = db.session.query(Artist).filter_by(genre_id=genre_id).all()
-    
-    #pull related records for this genre
-    relatedRecords = db.session.query(Record).filter_by(genre_id=genre_id).all()
-    
+
+    # pull related artists for this genre
+    relatedArtists = db.session.query(
+        Artist).filter_by(genre_id=genre_id).all()
+
+    # pull related records for this genre
+    relatedRecords = db.session.query(
+        Record).filter_by(genre_id=genre_id).all()
+
     if request.method == 'POST':
         db.session.delete(genreToDelete)
         for artist in relatedArtists:
@@ -273,6 +328,10 @@ def deleteGenre(genre_id):
         return redirect('/genres')
 
     if 'username' not in login_session:
-        return render_template("/genres/delete_genres.html", genre=genreToDelete, artists=relatedArtists, records=relatedRecords, loggedIn = False)
+        return render_template("/genres/delete_genres.html",
+                               genre=genreToDelete, artists=relatedArtists,
+                               records=relatedRecords, loggedIn=False)
     else:
-        return render_template("/genres/delete_genres.html", genre=genreToDelete, artists=relatedArtists, records=relatedRecords, loggedIn = True)
+        return render_template("/genres/delete_genres.html",
+                               genre=genreToDelete, artists=relatedArtists,
+                               records=relatedRecords, loggedIn=True)

@@ -1,7 +1,8 @@
 # Import flask dependencies
 from flask import Blueprint, request, render_template, \
-                  flash, g, session as login_session, redirect, url_for, make_response
-import random, string
+    flash, g, session as login_session, redirect, url_for, make_response
+import random
+import string
 
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
@@ -15,7 +16,7 @@ from sqlalchemy.orm import sessionmaker
 # Import password / encryption helper tools
 from werkzeug import check_password_hash, generate_password_hash
 
-#json for jsonify
+# json for jsonify
 import json
 
 # Import the database object from the main app module
@@ -24,12 +25,15 @@ from app import db
 # Import module models (i.e. User)
 from app.auth.auth_model import User
 
-CLIENT_ID = json.loads(open('config/client_secrets.json', 'r').read())['web']['client_id']
+CLIENT_ID = json.loads(open('config/client_secrets.json',
+                            'r').read())['web']['client_id']
 
 # Define the blueprint: 'auth', set its url prefix: app.url/auth
 authBase = Blueprint('auth', __name__, url_prefix='')
 
 # User Helper Functions
+
+
 def createUser(login_session):
     newUser = User(name=login_session['username'], email=login_session[
                    'email'], picture=login_session['picture'])
@@ -52,12 +56,15 @@ def getUserID(email):
         return None
 
 # Set the route and accepted methods
+
+
 @authBase.route('/login', methods=['GET'])
 def login():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
                     for x in xrange(32))
     login_session['state'] = state
-    return render_template("auth/login.html", STATE = state)
+    return render_template("auth/login.html", STATE=state)
+
 
 @authBase.route('/gconnect', methods=['POST'])
 def gconnect():
@@ -68,11 +75,12 @@ def gconnect():
         return response
     # Obtain authorization code
     code = request.data
-    print 'code: '+ code
-    
+    print 'code: ' + code
+
     try:
         # Upgrade the authorization code into a credentials object
-        oauth_flow = flow_from_clientsecrets('config/client_secrets.json', scope='')
+        oauth_flow = flow_from_clientsecrets(
+            'config/client_secrets.json', scope='')
         oauth_flow.redirect_uri = 'postmessage'
         credentials = oauth_flow.step2_exchange(code)
         print credentials
@@ -82,7 +90,7 @@ def gconnect():
         response.headers['Content-Type'] = 'application/json'
         print response
         return response
-    
+
     # Check that the access token is valid.
     access_token = credentials.access_token
     url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s'
@@ -94,7 +102,7 @@ def gconnect():
     if result.get('error') is not None:
         response = make_response(json.dumps(result.get('error')), 500)
         response.headers['Content-Type'] = 'application/json'
-        
+
     # Verify that the access token is used for the intended user.
     gplus_id = credentials.id_token['sub']
     if result['user_id'] != gplus_id:
@@ -102,7 +110,7 @@ def gconnect():
             json.dumps("Token's user ID doesn't match given user ID."), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
-    
+
     # Verify that the access token is valid for this app.
     if result['issued_to'] != CLIENT_ID:
         response = make_response(
@@ -110,7 +118,7 @@ def gconnect():
         print "Token's client ID does not match app's."
         response.headers['Content-Type'] = 'application/json'
         return response
-    
+
     stored_credentials = login_session.get('credentials')
     stored_gplus_id = login_session.get('gplus_id')
     if stored_credentials is not None and gplus_id == stored_gplus_id:
@@ -118,7 +126,7 @@ def gconnect():
                                  200)
         response.headers['Content-Type'] = 'application/json'
         return response
-    
+
      # Store the access token in the session for later use.
     login_session['credentials'] = credentials
     login_session['gplus_id'] = gplus_id
@@ -134,12 +142,10 @@ def gconnect():
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
 
-
     user_id = getUserID(login_session['email'])
     if not user_id:
-      user_id = createUser(login_session)
+        user_id = createUser(login_session)
     login_session['user_id'] = user_id
-
 
     # See if a user exists, if it doesn't make a new one
 
@@ -153,6 +159,7 @@ def gconnect():
     flash("you are now logged in as %s" % login_session['username'])
     print "done!"
     return output
+
 
 @authBase.route('/gdisconnect')
 def gdisconnect():
@@ -186,8 +193,8 @@ def gdisconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
 
-    
-#Facebook Auth    
+
+# Facebook Auth
 @authBase.route('/fbconnect', methods=['POST'])
 def fbconnect():
     if request.args.get('state') != login_session['state']:
@@ -211,7 +218,6 @@ def fbconnect():
     # strip expire tag from access token
     token = result.split("&")[0]
 
-
     url = 'https://graph.facebook.com/v2.4/me?%s&fields=name,id,email' % token
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
@@ -223,7 +229,9 @@ def fbconnect():
     login_session['email'] = data["email"]
     login_session['facebook_id'] = data["id"]
 
-    # The token must be stored in the login_session in order to properly logout, let's strip out the information before the equals sign in our token
+    # The token must be stored in the login_session in order to properly
+    # logout, let's strip out the information before the equals sign in our
+    # token
     stored_token = token.split("=")[1]
     login_session['access_token'] = stored_token
 
@@ -259,7 +267,8 @@ def fbdisconnect():
     facebook_id = login_session['facebook_id']
     # The access token must me included to successfully logout
     access_token = login_session['access_token']
-    url = 'https://graph.facebook.com/%s/permissions?access_token=%s' % (facebook_id,access_token)
+    url = 'https://graph.facebook.com/%s/permissions?access_token=%s' % (
+        facebook_id, access_token)
     h = httplib2.Http()
     result = h.request(url, 'DELETE')[1]
     return "you have been logged out"
