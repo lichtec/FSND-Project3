@@ -21,6 +21,10 @@ Udacity Full Stack Nanodegree Project 3. Creating an item catalog that includes 
     * Werkzeug==0.11.5
     * WTForms==2.1
     
+*In the same directory as the readme, there is a requirements.txt file. You can use the following command (ran in the directory the file is) to install all of these using pip. The first is for a unix environment the second is for a windows environment.
+
+    >sudo pip install -r requirements.txt
+    >pip install -r requirements.txt
 
 ##Build Dependencies:
 

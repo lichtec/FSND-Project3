@@ -185,7 +185,8 @@ def gdisconnect():
 
         response = make_response(json.dumps('Successfully disconnected.'), 200)
         response.headers['Content-Type'] = 'application/json'
-        return response
+        flash(response)
+        return redirect('/records')
     else:
         # For whatever reason, the given token was invalid.
         response = make_response(
@@ -271,4 +272,5 @@ def fbdisconnect():
         facebook_id, access_token)
     h = httplib2.Http()
     result = h.request(url, 'DELETE')[1]
-    return "you have been logged out"
+    flash("You have been logged out")
+    return redirect('/records')
