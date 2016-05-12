@@ -34,18 +34,15 @@ Udacity Full Stack Nanodegree Project 3. Creating an item catalog that includes 
 
 1. To run the application simply use the current structure with all of the files. Basically, don't change anything.
 
-2. The first step is to run the following command under the item_catalog directory. It starts up the application and creates the empty db. Once this starts it will run on 0.0.0.0:5000 and is ready for use.
+2.  If you would like test data frun the following in the item_catalog directory.
+
+    >python lotsOfRecords.py
+
+3. The first step is to run the following command under the item_catalog directory. It starts up the application and creates the empty db. Once this starts it will run on 0.0.0.0:5000 and is ready for use.
 
     >python run.py
 
-If you would like some test data follow the following steps. If not you are ready to begin using the item catalog.
-
-1. Hit ctrl-C to stop the application so we can run the script to add test data to the db.
-2. Run the following command under item_catalog directory to insert  values into the database for testing.
-    
-    >python lotsOfRecords.py
-
-3. After it completes, there are values in the db and you can rerun the previous steps to start the application.
+4. To stop the application hit CTRL-C.
 
 ##Open Source Info
 * This application is using David Miller's template for Bootstrap. Please see the included folder for more information.

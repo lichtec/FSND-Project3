@@ -105,7 +105,8 @@ class Record(Base):
         }
     # New instance instantiation procedure
 
-        def __init__(self, title, artist_id, genre_id, year, description, record_image):
+        def __init__(self, title, artist_id, genre_id, year, description,
+                     record_image):
             self.title = title
             self.artist_id = artist_id
             self.genre_id = genre_id

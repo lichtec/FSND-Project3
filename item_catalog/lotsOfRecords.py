@@ -16,22 +16,22 @@ f = open('config/testData.json')
 parsedJson = json.loads(f.read())
 
 for genre in parsedJson['genres']:
-    newGenre = Genre(id=genre['id'], genre_name=genre['name'], 
-                    description=genre['description'], 
+    newGenre = Genre(id=genre['id'], genre_name=genre['name'],
+                    description=genre['description'],
                      genre_image=genre['image'])
     session.add(newGenre)
     session.commit()
-    
+
 print 'Genres added'
 
 for artist in parsedJson['artists']:
-    newArtist = Artist(id=artist['id'], artist_name=artist['name'], 
+    newArtist = Artist(id=artist['id'], artist_name=artist['name'],
                     genre_id=artist['genre_id'], artist_image=artist['image'])
     session.add(newArtist)
     session.commit()
-    
+
 print 'Artists added'
-#
+
 for record in parsedJson['records']:
     newRecord = Record(id=record['id'], title=record['title'],
                        artist_id=record['artist_id'],
@@ -40,5 +40,5 @@ for record in parsedJson['records']:
                        record_image=record['image'], year=record['year'])
     session.add(newRecord)
     session.commit()
-    
+
 print 'Records added'
