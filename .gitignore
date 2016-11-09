@@ -61,3 +61,4 @@ target/
 
 #os file system
 .DS_Store
+/item_catalog/app/record_modification/__init__.pyc

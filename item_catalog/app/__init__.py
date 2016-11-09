@@ -10,12 +10,12 @@ from sqlalchemy.orm import sessionmaker
 app = Flask(__name__)
 
 # Configuration
-app.config.from_object('config')
+app.config.from_pyfile('config.py')
 
 # Define the database object which is imported
 # by modules and controllers
 db = SQLAlchemy(app)
-engine = db.create_engine('sqlite:///app.db')
+engine = db.create_engine(app.SQLALCHEMY_DATABASE_URI)
 db.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
@@ -41,4 +41,4 @@ app.register_blueprint(mod)
 
 # Build the database:
 # This will create the database file using SQLAlchemy
-db.create_all()
+#db.create_all()

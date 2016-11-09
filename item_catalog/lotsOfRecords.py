@@ -6,7 +6,9 @@ import json
 
 from app.records.record_model import Base, Genre, Artist, Record
 
-engine = create_engine('sqlite:///app.db')
+SQLALCHEMY_DATABASE_URI = "postgresql://catalog@localhost/catalog"
+
+engine = create_engine(SQLALCHEMY_DATABASE_URI)
 Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
